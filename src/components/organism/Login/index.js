@@ -35,7 +35,7 @@ const Login = () => {
           })
         );
         // dispatch(showNavbar());
-        // router.push("/");
+        // router.push("/payments");
       }
     } catch (error) {
       console.error("Unexpected error:", error);
