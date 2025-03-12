@@ -3,10 +3,31 @@ import Form from "@/components/atoms/Form";
 import Input from "@/components/atoms/Input";
 import Section from "@/components/atoms/Section";
 import { formatCurrency } from "@/helpers/utils/formatCurrency";
-import React, { useState } from "react";
+import { useRouter } from "next/router";
+import React, { useEffect, useState } from "react";
 
 const PaymentsPage = () => {
   const [amount, setAmount] = useState("");
+  const router = useRouter();
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      router.push("/auth/login");
+    } else {
+      setLoading(false);
+    }
+  }, [router]);
+
+  if (loading) {
+    return (
+      <Section className="flex items-center justify-center h-screen">
+        <p className="text-lg font-semibold">Loading...</p>
+      </Section>
+    );
+  }
 
   const paymentOptions = {
     uas: 1000000,

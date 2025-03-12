@@ -1,6 +1,6 @@
 import { hideNavbar } from "@/redux/navbarReduce";
 import React, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 
 const AuthLayout = ({ children }) => {
   const dispatch = useDispatch();
@@ -8,6 +8,7 @@ const AuthLayout = ({ children }) => {
   useEffect(() => {
     dispatch(hideNavbar());
   }, [dispatch]);
+
   return (
     <section
       className="bg-gray-50 "

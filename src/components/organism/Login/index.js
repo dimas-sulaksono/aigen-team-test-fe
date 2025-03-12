@@ -8,6 +8,7 @@ import { useDispatch } from "react-redux";
 import { login } from "@/services/auth";
 import { showNotificationWithTimeout } from "@/redux/notificationSlice";
 import Link from "next/link";
+import { showNavbar } from "@/redux/navbarReduce";
 
 const Login = () => {
   const router = useRouter();
@@ -34,8 +35,8 @@ const Login = () => {
             duration: 3000,
           })
         );
-        // dispatch(showNavbar());
-        // router.push("/payments");
+        dispatch(showNavbar());
+        router.push("/payments");
       }
     } catch (error) {
       console.error("Unexpected error:", error);
