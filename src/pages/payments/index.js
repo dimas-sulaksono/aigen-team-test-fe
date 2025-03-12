@@ -2,7 +2,6 @@ import Button from "@/components/atoms/Button";
 import Form from "@/components/atoms/Form";
 import Input from "@/components/atoms/Input";
 import Section from "@/components/atoms/Section";
-import { formatCurrency } from "@/helpers/utils/formatCurrency";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 
@@ -20,14 +19,6 @@ const PaymentsPage = () => {
       setLoading(false);
     }
   }, [router]);
-
-  if (loading) {
-    return (
-      <Section className="flex items-center justify-center h-screen">
-        <p className="text-lg font-semibold">Loading...</p>
-      </Section>
-    );
-  }
 
   const paymentOptions = {
     uas: 1000000,

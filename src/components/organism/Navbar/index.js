@@ -40,11 +40,9 @@ const Navbar = () => {
           </ul>
         </div>
 
-        {/* Icons & Mobile Menu Button */}
         <div className="flex items-center space-x-4">
           <IoMdNotificationsOutline className="text-gray-600 hover:text-gray-800 cursor-pointer text-xl" />
 
-          {/* User Dropdown */}
           <div className="relative">
             <FaRegUser
               onClick={() => dispatch(toggleDropdown())}
@@ -75,7 +73,6 @@ const Navbar = () => {
             )}
           </div>
 
-          {/* Mobile Menu Button */}
           <FaBars
             className="lg:hidden text-gray-600 hover:text-gray-800 cursor-pointer text-2xl"
             onClick={() => dispatch(toggleMenu())}
@@ -83,7 +80,6 @@ const Navbar = () => {
         </div>
       </div>
 
-      {/* Mobile Menu */}
       <div
         className={`fixed top-0 right-0 h-full w-64 bg-white shadow-lg lg:hidden transform ${
           menuOpen ? "translate-x-0" : "translate-x-full"
