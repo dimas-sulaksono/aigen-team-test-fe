@@ -6,11 +6,14 @@ import LogoIcon from "@/components/molecules/LogoIcon";
 import { useRouter } from "next/router";
 import { useDispatch, useSelector } from "react-redux";
 import { closeAll, toggleDropdown, toggleMenu } from "@/redux/navbarReduce";
+import useSignOut from "@/hooks/useSignOut";
+import Button from "@/components/atoms/Button";
 
 const Navbar = () => {
   const router = useRouter();
   const dispatch = useDispatch();
   const { menuOpen, dropdownOpen } = useSelector((state) => state.navbar);
+  const { signOut } = useSignOut();
 
   const isActive = (path) => router.asPath === path;
 
@@ -40,11 +43,9 @@ const Navbar = () => {
           </ul>
         </div>
 
-        {/* Icons & Mobile Menu Button */}
         <div className="flex items-center space-x-4">
           <IoMdNotificationsOutline className="text-gray-600 hover:text-gray-800 cursor-pointer text-xl" />
 
-          {/* User Dropdown */}
           <div className="relative">
             <FaRegUser
               onClick={() => dispatch(toggleDropdown())}
@@ -63,19 +64,21 @@ const Navbar = () => {
                     </Link>
                   </li>
                   <li>
-                    <button
+                    <Button
                       className="block w-full text-left px-4 py-2 text-gray-600 hover:bg-gray-100"
-                      onClick={() => dispatch(closeAll())}
+                      onClick={() => {
+                        signOut;
+                        dispatch(closeAll());
+                      }}
                     >
                       Logout
-                    </button>
+                    </Button>
                   </li>
                 </ul>
               </div>
             )}
           </div>
 
-          {/* Mobile Menu Button */}
           <FaBars
             className="lg:hidden text-gray-600 hover:text-gray-800 cursor-pointer text-2xl"
             onClick={() => dispatch(toggleMenu())}
@@ -83,19 +86,18 @@ const Navbar = () => {
         </div>
       </div>
 
-      {/* Mobile Menu */}
       <div
         className={`fixed top-0 right-0 h-full w-64 bg-white shadow-lg lg:hidden transform ${
           menuOpen ? "translate-x-0" : "translate-x-full"
         } transition-transform`}
       >
         <div className="p-5">
-          <button
+          <Button
             className="text-gray-600 hover:text-gray-800 text-xl"
             onClick={() => dispatch(closeAll())}
           >
             ✖
-          </button>
+          </Button>
           <ul className="mt-6 space-y-4 text-lg">
             {["/payments", "/history", "/support"].map((path, index) => (
               <li key={index}>
