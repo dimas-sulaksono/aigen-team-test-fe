@@ -1,3 +1,5 @@
+import Button from "@/components/atoms/Button";
+import useSignOut from "@/hooks/useSignOut";
 import { closeAll, toggleDropdown } from "@/redux/navbarReduce";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -15,6 +17,7 @@ const SideBarAdmin = ({ children }) => {
   const router = useRouter();
   const dispatch = useDispatch();
   const { dropdownOpen } = useSelector((state) => state.navbar);
+  const { signOut } = useSignOut();
 
   const isActive = (path) => router.asPath === path;
   return (
@@ -100,12 +103,15 @@ const SideBarAdmin = ({ children }) => {
                 <div className="absolute mt-20 left-0 z-40 bg-gray-50 w-full shadow-lg rounded-lg">
                   <ul>
                     <li>
-                      <button
+                      <Button
                         className="block w-full text-left px-4 py-2 text-gray-600 hover:bg-gray-100"
-                        onClick={() => dispatch(closeAll())}
+                        onClick={() => {
+                          signOut();
+                          dispatch(closeAll());
+                        }}
                       >
                         Logout
-                      </button>
+                      </Button>
                     </li>
                   </ul>
                 </div>
