@@ -1,10 +1,11 @@
 import { Row } from '@/components/atoms/Row';
 import Bar from '@/components/molecules/HistoryBar';
 import { getUserPaymentHistory } from '@/services/payment';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
-const HistoryPage = ({ data }) => {
-  const [showId, setShowId] = useState(null);
+const HistoryPage = () => {
+  const [content, setContent] = useState();
+  const [pageable, setPageable] = useState();
   const dummyData = [{
     id: 1,
     type: "XXX",
@@ -22,11 +23,23 @@ const HistoryPage = ({ data }) => {
     status: "PENDING"
   }];
 
-  const toggleShowAction = (id) => {
-    setShowId(showId == id ? null : id);
+  const fetchPaymentUser = async () => {
+    console.log("Fetch payment user berjalan!");
+
+    const response = await getUserPaymentHistory();
+    if (response.status) {
+      console.log(response.data);
+      setContent(response.data.content);
+      setPageable(response.data.pageable);
+    } else {
+      console.log(response.message);
+    }
+
   };
 
-  console.log(data);
+  useEffect(() => {
+    fetchPaymentUser();
+  }, []);
 
 
   return (
@@ -63,7 +76,7 @@ const HistoryPage = ({ data }) => {
               </thead>
               {/* Table Body */}
               <tbody>
-                {dummyData.map(data => (
+                {content.map(data => (
                   <Row key={data.id} data={data} show={showId == data.id} setShow={() => toggleShowAction(data.id)} />
                 ))}
 
@@ -176,17 +189,17 @@ const HistoryPage = ({ data }) => {
 
 
 
-export async function getServerSideProps() {
-  const response = await getUserPaymentHistory();
-  
-  if (response.status) {
-    return {
-      props: { data: response.data }
-    };
-  }
-  return {
-    props: { data: [] }
-  };
-}
+// export async function getServerSideProps() {
+//   const response = await getUserPaymentHistory();
+
+//   if (response.status) {
+//     return {
+//       props: { data: response.data }
+//     };
+//   }
+//   return {
+//     props: { data: [] }
+//   };
+// }
 
 export default HistoryPage;
