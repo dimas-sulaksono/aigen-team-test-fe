@@ -1,14 +1,19 @@
 import { useState, useRef, useEffect } from "react";
 
 export default function FilterDropdown() {
-  const [isOpen, setIsOpen] = useState(false);
-  const dropdownRef = useRef(null);
+  const [isOpenFilter, setIsOpenFilter] = useState(false);
+  const [isOpenSize, setIsOpenSize] = useState(false);
+  const filterRef = useRef(null);
+  const sizeRef = useRef(null);
 
-  // Menutup dropdown jika klik di luar
+
   useEffect(() => {
     function handleClickOutside(event) {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setIsOpen(false);
+      if (filterRef.current && !filterRef.current.contains(event.target)) {
+        setIsOpenFilter(false);
+      }
+      if (sizeRef.current && !sizeRef.current.contains(event.target)) {
+        setIsOpenSize(false);
       }
     }
     document.addEventListener("mousedown", handleClickOutside);
@@ -19,8 +24,56 @@ export default function FilterDropdown() {
 
   return (
     <div className="flex flex-col md:flex-row items-center justify-between space-y-3 md:space-y-0 md:space-x-4 p-4">
-      <div className="w-full md:w-1/2">
-        <form className="flex items-center">
+      <div className="w-full md:w-1/2 flex gap-3">
+        {/* Size */}
+        <div className="relative" ref={sizeRef}>
+          <button
+            onClick={() => setIsOpenSize(!isOpenSize)}
+            className="w-full md:w-auto flex items-center justify-center py-2 px-4 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+          >
+
+            10
+            <svg
+              className="-mr-1 ml-1.5 w-5 h-5"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+              xmlns="http://www.w3.org/2000/svg"
+              aria-hidden="true"
+            >
+              <path
+                clipRule="evenodd"
+                fillRule="evenodd"
+                d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+              />
+            </svg>
+          </button>
+          {isOpenSize && (
+            <div className="absolute z-10 bg-white divide-y divide-gray-100 rounded-lg shadow-sm w-44 dark:bg-gray-700 top-full left-0 mt-2">
+              <ul className="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownHoverButton">
+                <li>
+                  <a href="#" className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
+                    10
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
+                    30
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
+                    50
+                  </a>
+                </li>
+
+              </ul>
+            </div>
+          )}
+
+
+        </div>
+
+        <form className="flex items-center w-full">
           <label htmlFor="simple-search" className="sr-only">
             Search
           </label>
@@ -70,9 +123,10 @@ export default function FilterDropdown() {
           </svg>
           New payment
         </button>
-        <div className="relative" ref={dropdownRef}>
+        {/* Filter */}
+        <div className="relative" ref={filterRef}>
           <button
-            onClick={() => setIsOpen(!isOpen)}
+            onClick={() => setIsOpenFilter(!isOpenFilter)}
             className="w-full md:w-auto flex items-center justify-center py-2 px-4 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
           >
             <svg
@@ -103,8 +157,8 @@ export default function FilterDropdown() {
               />
             </svg>
           </button>
-          {isOpen && (
-            <div id="dropdownHover" className="absolute z-10 bg-white divide-y divide-gray-100 rounded-lg shadow-sm w-44 dark:bg-gray-700 top-full left-0 mt-2">
+          {isOpenFilter && (
+            <div className="absolute z-10 bg-white divide-y divide-gray-100 rounded-lg shadow-sm w-44 dark:bg-gray-700 top-full left-0 mt-2">
               <ul className="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownHoverButton">
                 <li>
                   <a href="#" className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
@@ -139,6 +193,7 @@ export default function FilterDropdown() {
               </ul>
             </div>
           )}
+
 
         </div>
       </div>

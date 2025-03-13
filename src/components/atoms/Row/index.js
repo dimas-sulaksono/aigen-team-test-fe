@@ -1,17 +1,17 @@
 import React from 'react';
 
 export const Row = ({ data }) => {
-  const { type, name, amount, status } = data;
+  const { type, name, amount, status, schoolYear } = data;
   return (
     <tr className="border-b dark:border-gray-700">
       <th
         scope="row"
         className="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white"
       >
-        {type.paymentTypeName}
+        {type}
       </th>
       <td className="px-4 py-3">{name}</td>
-      <td className="px-4 py-3">-</td>
+      <td className="px-4 py-3">{schoolYear}</td>
       <td className="px-4 py-3">{amount}</td>
       <td className="px-4 py-3">{status}</td>
       <td className="px-4 py-3 flex gap-3">
