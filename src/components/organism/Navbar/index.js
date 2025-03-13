@@ -56,7 +56,7 @@ const Navbar = () => {
                 <ul>
                   <li>
                     <Link
-                      href="/profile"
+                      href="/userprofile"
                       className="block px-4 py-2 text-gray-600 hover:bg-gray-100"
                       onClick={() => dispatch(closeAll())}
                     >
@@ -92,10 +92,7 @@ const Navbar = () => {
         } transition-transform`}
       >
         <div className="p-5">
-          <Button
-            className="text-gray-600 hover:text-gray-800 text-xl"
-            onClick={() => dispatch(closeAll())}
-          >
+          <button className="text-gray-600 hover:text-gray-800 text-xl" onClick={() => dispatch(closeAll())}>
             ✖
           </Button>
           <ul className="mt-6 space-y-4 text-lg">
