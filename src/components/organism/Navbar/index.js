@@ -65,9 +65,10 @@ const Navbar = () => {
                   </li>
                   <li>
                     <Button
-                      className="block w-full px-4 py-2 text-left text-gray-600 hover:bg-gray-100"
-                      onClick={() => {
-                        signOut;
+                      type={"button"}
+                      className="block w-full cursor-pointer px-4 py-2 text-left text-gray-600 hover:bg-gray-100"
+                      onClick={async () => {
+                        await signOut();
                         dispatch(closeAll());
                       }}
                     >

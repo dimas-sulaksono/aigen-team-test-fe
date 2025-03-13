@@ -12,47 +12,47 @@ export default function App({ Component, pageProps }) {
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 
-  // useEffect(() => {
-  //   const token = localStorage.getItem("token");
+  useEffect(() => {
+    const token = localStorage.getItem("token");
 
-  //   if (token) {
-  //     try {
-  //       const decoded = jwtDecode(token);
-  //       const roles = decoded.role || [];
-  //       console.log("roles", roles);
+    if (token) {
+      try {
+        const decoded = jwtDecode(token);
+        const roles = decoded.role || [];
+        console.log("roles", roles);
 
-  //       if (router.pathname.startsWith("/admin") && !roles.includes("ADMIN")) {
-  //         router.replace("/");
-  //       } else {
-  //         setIsAuthorized(true);
-  //       }
-  //     } catch (error) {
-  //       console.error("Invalid token:", error);
-  //       router.replace("/");
-  //     }
-  //   } else {
-  //     if (router.pathname.startsWith("/admin")) {
-  //       router.replace("/");
-  //     } else {
-  //       setIsAuthorized(true);
-  //     }
-  //   }
+        if (router.pathname.startsWith("/admin") && !roles.includes("ADMIN")) {
+          router.replace("/");
+        } else {
+          setIsAuthorized(true);
+        }
+      } catch (error) {
+        console.error("Invalid token:", error);
+        router.replace("/");
+      }
+    } else {
+      if (router.pathname.startsWith("/admin")) {
+        router.replace("/");
+      } else {
+        setIsAuthorized(true);
+      }
+    }
 
-  //   setTimeout(() => setLoading(false), 500);
-  // }, [router.pathname]);
+    setTimeout(() => setLoading(false), 500);
+  }, [router.pathname]);
 
-  // if (loading)
-  //   return (
-  //     <div className="h-screen flex justify-center items-center">
-  //       Loading...
-  //     </div>
-  //   );
+  if (loading)
+    return (
+      <div className="h-screen flex justify-center items-center">
+        Loading...
+      </div>
+    );
   return (
     <Provider store={store}>
       <Layout>
         <NotificationContainer />
-        {/* {isAuthorized && <Component {...pageProps} />} */}
-        <Component {...pageProps} />
+        {isAuthorized && <Component {...pageProps} />}
+        {/* <Component {...pageProps} /> */}
       </Layout>
     </Provider>
   );
