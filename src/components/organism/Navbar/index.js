@@ -18,21 +18,21 @@ const Navbar = () => {
   const isActive = (path) => router.asPath === path;
 
   return (
-    <nav className="bg-white shadow sticky top-0 z-10">
-      <div className="container mx-auto lg:px-10 px-5 py-4 flex justify-between items-center">
+    <nav className="sticky top-0 z-10 bg-white shadow">
+      <div className="container mx-auto flex items-center justify-between px-5 py-4 lg:px-10">
         <div className="flex items-center gap-3.5">
           <Link href="/">
             <LogoIcon size={24} />
           </Link>
 
-          <ul className="md:flex md:space-x-6 hidden">
+          <ul className="hidden md:flex md:space-x-6">
             {["/payments", "/history", "/support"].map((path, index) => (
               <li key={index}>
                 <Link
                   href={path}
-                  className={`font-medium hover:border-b-2 text-sm ${
+                  className={`text-sm font-medium hover:border-b-2 ${
                     isActive(path)
-                      ? "text-black font-bold border-b-2 border-black"
+                      ? "border-b-2 border-black font-bold text-black"
                       : "text-gray-600 hover:text-gray-800"
                   }`}
                 >
@@ -44,15 +44,15 @@ const Navbar = () => {
         </div>
 
         <div className="flex items-center space-x-4">
-          <IoMdNotificationsOutline className="text-gray-600 hover:text-gray-800 cursor-pointer text-xl" />
+          <IoMdNotificationsOutline className="cursor-pointer text-xl text-gray-600 hover:text-gray-800" />
 
           <div className="relative">
             <FaRegUser
               onClick={() => dispatch(toggleDropdown())}
-              className="text-gray-600 hover:text-gray-800 cursor-pointer text-xl"
+              className="cursor-pointer text-xl text-gray-600 hover:text-gray-800"
             />
             {dropdownOpen && (
-              <div className="absolute right-0 bg-white shadow-lg w-40 rounded-lg">
+              <div className="absolute right-0 w-40 rounded-lg bg-white shadow-lg">
                 <ul>
                   <li>
                     <Link
@@ -65,7 +65,7 @@ const Navbar = () => {
                   </li>
                   <li>
                     <Button
-                      className="block w-full text-left px-4 py-2 text-gray-600 hover:bg-gray-100"
+                      className="block w-full px-4 py-2 text-left text-gray-600 hover:bg-gray-100"
                       onClick={() => {
                         signOut;
                         dispatch(closeAll());
@@ -80,21 +80,24 @@ const Navbar = () => {
           </div>
 
           <FaBars
-            className="lg:hidden text-gray-600 hover:text-gray-800 cursor-pointer text-2xl"
+            className="cursor-pointer text-2xl text-gray-600 hover:text-gray-800 lg:hidden"
             onClick={() => dispatch(toggleMenu())}
           />
         </div>
       </div>
 
       <div
-        className={`fixed top-0 right-0 h-full w-64 bg-white shadow-lg lg:hidden transform ${
+        className={`fixed top-0 right-0 h-full w-64 transform bg-white shadow-lg lg:hidden ${
           menuOpen ? "translate-x-0" : "translate-x-full"
         } transition-transform`}
       >
         <div className="p-5">
-          <button className="text-gray-600 hover:text-gray-800 text-xl" onClick={() => dispatch(closeAll())}>
+          <button
+            className="text-xl text-gray-600 hover:text-gray-800"
+            onClick={() => dispatch(closeAll())}
+          >
             ✖
-          </Button>
+          </button>
           <ul className="mt-6 space-y-4 text-lg">
             {["/payments", "/history", "/support"].map((path, index) => (
               <li key={index}>
@@ -102,7 +105,7 @@ const Navbar = () => {
                   href={path}
                   className={`block p-2 ${
                     isActive(path)
-                      ? "text-black font-bold border-l-4 border-black pl-3"
+                      ? "border-l-4 border-black pl-3 font-bold text-black"
                       : "text-gray-600 hover:text-gray-800"
                   }`}
                   onClick={() => dispatch(closeAll())}
