@@ -3,7 +3,6 @@ import React from 'react';
 export const Pagination = ({ pageable = {} }) => {
   const totalPage = pageable.totalPage;
   const pageNumber = pageable.pageable.pageNumber;
-  console.log(pageable);
 
   if (totalPage <= pageNumber) return (null);
 

@@ -1,11 +1,21 @@
+import { useRouter } from "next/router";
 import { useState, useRef, useEffect } from "react";
 
 export default function FilterDropdown() {
+  const router = useRouter();
   const [payload, setPayload] = useState({});
 
 
   const handleChange = (filter) => {
-    console.log(filter);
+
+    const [key, value] = Object.entries(filter)[0];
+    if (!value) {
+      setPayload((prev) => {
+        const { [key]: _, ...fresh } = prev;
+        return fresh;
+      });
+      return;
+    }
 
     setPayload((prev) => ({
       ...prev,
@@ -13,8 +23,22 @@ export default function FilterDropdown() {
     }));
   };
 
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const value = e.target.search.value;
+    if (!value.trim() && !payload.search) return;
+    if (value.trim() == payload.search) return;
+
+    handleChange({ search: value.trim() });
+  };
+
+
   useEffect(() => {
     console.log(payload);
+    router.push({
+      pathname: router.pathname,
+      query: payload
+    });
   }, [payload]);
 
   return (
@@ -33,7 +57,7 @@ export default function FilterDropdown() {
 
         </div>
 
-        <form className="flex items-center w-full">
+        <form className="flex items-center w-full" onSubmit={(e) => { handleSubmit(e); }}>
           <label htmlFor="simple-search" className="sr-only">
             Search
           </label>
@@ -55,10 +79,9 @@ export default function FilterDropdown() {
             </div>
             <input
               type="text"
-              id="simple-search"
+              id="search"
               className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full pl-10 p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
               placeholder="Search"
-              required
             />
           </div>
         </form>
