@@ -70,7 +70,9 @@ const HistoryPage = () => {
             </table>
           </div>
           {/* Pagination */}
-          <Pagination pageable={pageable} />
+          {pageable && (
+            <Pagination pageable={pageable} />
+          )}
         </div>
       </div>
     </section>

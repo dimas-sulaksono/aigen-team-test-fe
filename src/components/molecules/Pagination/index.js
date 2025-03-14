@@ -1,8 +1,9 @@
 import React from 'react';
 
 export const Pagination = ({ pageable = {} }) => {
-  const pageNumber = 10;
-  const totalPage = 12;
+  const totalPage = pageable.totalPage;
+  const pageNumber = pageable.pageable.pageNumber;
+  console.log(pageable);
 
   if (totalPage <= pageNumber) return (null);
 
