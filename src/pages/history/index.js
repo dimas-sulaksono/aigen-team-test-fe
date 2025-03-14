@@ -2,16 +2,17 @@ import { Row } from '@/components/atoms/Row';
 import Bar from '@/components/molecules/HistoryBar';
 import { Pagination } from '@/components/molecules/Pagination';
 import { getUserPaymentHistory } from '@/services/payment';
+import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 
 const HistoryPage = () => {
+  const router = useRouter();
   const [data, setData] = useState();
   const [pageable, setPageable] = useState();
 
   const fetchPaymentUser = async () => {
-    console.log("Fetch payment user berjalan!");
 
-    const response = await getUserPaymentHistory();
+    const response = await getUserPaymentHistory(router.query);
     if (response.status) {
       const { content, ...pageable } = response.data;
       setData(content);
@@ -23,9 +24,12 @@ const HistoryPage = () => {
 
   };
 
+
   useEffect(() => {
     fetchPaymentUser();
-  }, []);
+  }, [router]);
+
+
 
 
   return (
@@ -70,7 +74,9 @@ const HistoryPage = () => {
             </table>
           </div>
           {/* Pagination */}
-          <Pagination pageable={pageable} />
+          {pageable && (
+            <Pagination pageable={pageable} />
+          )}
         </div>
       </div>
     </section>

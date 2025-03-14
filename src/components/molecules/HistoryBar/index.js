@@ -1,79 +1,63 @@
+import { useRouter } from "next/router";
 import { useState, useRef, useEffect } from "react";
 
 export default function FilterDropdown() {
-  const [isOpenFilter, setIsOpenFilter] = useState(false);
-  const [isOpenSize, setIsOpenSize] = useState(false);
-  const filterRef = useRef(null);
-  const sizeRef = useRef(null);
+  const router = useRouter();
+  const [payload, setPayload] = useState({});
+
+
+  const handleChange = (filter) => {
+
+    const [key, value] = Object.entries(filter)[0];
+    if (!value) {
+      setPayload((prev) => {
+        const { [key]: _, ...fresh } = prev;
+        return fresh;
+      });
+      return;
+    }
+
+    setPayload((prev) => ({
+      ...prev,
+      ...filter
+    }));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const value = e.target.search.value;
+    if (!value.trim() && !payload.search) return;
+    if (value.trim() == payload.search) return;
+
+    handleChange({ search: value.trim() });
+  };
 
 
   useEffect(() => {
-    function handleClickOutside(event) {
-      if (filterRef.current && !filterRef.current.contains(event.target)) {
-        setIsOpenFilter(false);
-      }
-      if (sizeRef.current && !sizeRef.current.contains(event.target)) {
-        setIsOpenSize(false);
-      }
-    }
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
+    console.log(payload);
+    router.push({
+      pathname: router.pathname,
+      query: payload
+    });
+  }, [payload]);
 
   return (
     <div className="flex flex-col md:flex-row items-center justify-between space-y-3 md:space-y-0 md:space-x-4 p-4">
       <div className="w-full md:w-1/2 flex gap-3">
         {/* Size */}
-        <div className="relative" ref={sizeRef}>
-          <button
-            onClick={() => setIsOpenSize(!isOpenSize)}
-            className="w-full md:w-auto flex items-center justify-center py-2 px-4 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+        <div className="relative">
+          <select
+            onChange={(e) => handleChange({ size: e.target.value })}
+            className="w-full md:w-auto py-2 pr-6 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-primary-700 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
           >
-
-            10
-            <svg
-              className="-mr-1 ml-1.5 w-5 h-5"
-              fill="currentColor"
-              viewBox="0 0 20 20"
-              xmlns="http://www.w3.org/2000/svg"
-              aria-hidden="true"
-            >
-              <path
-                clipRule="evenodd"
-                fillRule="evenodd"
-                d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-              />
-            </svg>
-          </button>
-          {isOpenSize && (
-            <div className="absolute z-10 bg-white divide-y divide-gray-100 rounded-lg shadow-sm w-44 dark:bg-gray-700 top-full left-0 mt-2">
-              <ul className="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownHoverButton">
-                <li>
-                  <a href="#" className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
-                    10
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
-                    30
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
-                    50
-                  </a>
-                </li>
-
-              </ul>
-            </div>
-          )}
-
+            <option value="1">1</option>
+            <option value="3">3</option>
+            <option value="5">5</option>
+          </select>
 
         </div>
 
-        <form className="flex items-center w-full">
+        <form className="flex items-center w-full" onSubmit={(e) => { handleSubmit(e); }}>
           <label htmlFor="simple-search" className="sr-only">
             Search
           </label>
@@ -95,10 +79,9 @@ export default function FilterDropdown() {
             </div>
             <input
               type="text"
-              id="simple-search"
+              id="search"
               className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full pl-10 p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
               placeholder="Search"
-              required
             />
           </div>
         </form>
@@ -124,78 +107,27 @@ export default function FilterDropdown() {
           New payment
         </button>
         {/* Filter */}
-        <div className="relative" ref={filterRef}>
-          <button
-            onClick={() => setIsOpenFilter(!isOpenFilter)}
-            className="w-full md:w-auto flex items-center justify-center py-2 px-4 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              aria-hidden="true"
-              className="h-4 w-4 mr-2 text-gray-400"
-              viewBox="0 0 20 20"
-              fill="currentColor"
-            >
-              <path
-                fillRule="evenodd"
-                d="M3 3a1 1 0 011-1h12a1 1 0 011 1v3a1 1 0 01-.293.707L12 11.414V15a1 1 0 01-.293.707l-2 2A1 1 0 018 17v-5.586L3.293 6.707A1 1 0 013 6V3z"
-                clipRule="evenodd"
-              />
-            </svg>
-            Filter
-            <svg
-              className="-mr-1 ml-1.5 w-5 h-5"
-              fill="currentColor"
-              viewBox="0 0 20 20"
-              xmlns="http://www.w3.org/2000/svg"
-              aria-hidden="true"
-            >
-              <path
-                clipRule="evenodd"
-                fillRule="evenodd"
-                d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-              />
-            </svg>
-          </button>
-          {isOpenFilter && (
-            <div className="absolute z-10 bg-white divide-y divide-gray-100 rounded-lg shadow-sm w-44 dark:bg-gray-700 top-full left-0 mt-2">
-              <ul className="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownHoverButton">
-                <li>
-                  <a href="#" className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
-                    SPP
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
-                    UTS
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
-                    UAS
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
-                    Extrakurikuler
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
-                    Lainnya
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
-                    Semua
-                  </a>
-                </li>
-              </ul>
-            </div>
-          )}
+        <select
+          onChange={(e) => handleChange({ type: e.target.value })}
+          className="w-full md:w-auto py-2 px-4 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-primary-700 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+        >
+          <option value="">- Type -</option>
+          <option value="SPP">SPP</option>
+          <option value="UTS">UTS</option>
+          <option value="UAS">UAS</option>
+          <option value="Extrakurikuler">Extrakurikuler</option>
+          <option value="Lainnya">Lainnya</option>
+        </select>
+        <select
+          onChange={(e) => handleChange({ status: e.target.value })}
+          className="w-full md:w-auto py-2 px-4 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-primary-700 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+        >
+          <option value="">- Status -</option>
+          <option value="paid">Paid</option>
+          <option value="pending">Pending</option>
+          <option value="overdue">Overdue</option>
+        </select>
 
-
-        </div>
       </div>
     </div>
   );
