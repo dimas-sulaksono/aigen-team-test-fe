@@ -11,7 +11,6 @@ const HistoryPage = () => {
   const [pageable, setPageable] = useState();
 
   const fetchPaymentUser = async () => {
-    console.log("Fetch payment user berjalan!");
 
     const response = await getUserPaymentHistory(router.query);
     if (response.status) {
@@ -25,14 +24,12 @@ const HistoryPage = () => {
 
   };
 
-  const filterPaymentUser = async () => {
-    console.log("Menjalankan filter");
-
-  };
 
   useEffect(() => {
     fetchPaymentUser();
   }, [router]);
+
+
 
 
   return (

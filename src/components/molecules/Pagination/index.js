@@ -1,10 +1,23 @@
-import React from 'react';
+import { useRouter } from 'next/router';
+import { useEffect } from 'react';
 
 export const Pagination = ({ pageable = {} }) => {
-  const totalPage = pageable.totalPage;
+  const router = useRouter();
+  const totalPage = pageable.totalPages;
   const pageNumber = pageable.pageable.pageNumber;
 
+  console.log(totalPage);
+  console.log(pageNumber);
+
+
   if (totalPage <= pageNumber) return (null);
+
+  const handleClick = (number) => {
+    router.push({
+      pathname: router.pathname,
+      query: { ...router.query, page: number },
+    });
+  };
 
   const page = (number, current = false) => {
     return current ? (
@@ -17,7 +30,7 @@ export const Pagination = ({ pageable = {} }) => {
         </div>
       </li>
     ) : (
-      <li>
+      <li onClick={() => { handleClick(number); }}>
         <div
           href="#"
           className="flex items-center justify-center text-sm py-2 px-3 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
@@ -27,7 +40,6 @@ export const Pagination = ({ pageable = {} }) => {
       </li>
     );
   };
-
 
   return (
     <nav
