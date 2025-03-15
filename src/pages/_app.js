@@ -43,7 +43,7 @@ export default function App({ Component, pageProps }) {
 
   if (loading)
     return (
-      <div className="h-screen flex justify-center items-center">
+      <div className="flex h-screen items-center justify-center">
         Loading...
       </div>
     );

@@ -27,13 +27,16 @@ const Login = () => {
       console.log(response);
 
       if (response.status) {
-        localStorage.setItem("token", response.data.data);
+        localStorage.setItem("token", response.data.data, {
+          expires: 7,
+          path: "/",
+        });
         dispatch(
           showNotificationWithTimeout({
             message: "login success",
             type: "success",
             duration: 3000,
-          })
+          }),
         );
         dispatch(showNavbar());
         router.push("/payments");
@@ -45,16 +48,16 @@ const Login = () => {
           message: data.response.data.message,
           type: "error",
           duration: 3000,
-        })
+        }),
       );
     }
   }
   return (
-    <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
+    <div className="space-y-4 p-6 sm:p-8 md:space-y-6">
       <div className="flex justify-center text-5xl text-gray-700">
         <FaGraduationCap />
       </div>
-      <h1 className="text-xl text-center font-bold leading-tight tracking-tight text-gray-900 md:text-2xl">
+      <h1 className="text-center text-xl leading-tight font-bold tracking-tight text-gray-900 md:text-2xl">
         School Payment
       </h1>
       <Form
@@ -65,7 +68,7 @@ const Login = () => {
         <div>
           <label
             for="email"
-            className="block mb-2 text-sm font-medium text-gray-900 "
+            className="mb-2 block text-sm font-medium text-gray-900"
           >
             Email
           </label>
@@ -73,7 +76,7 @@ const Login = () => {
             type="email"
             name="email"
             id="email"
-            className="bg-gray-50 border border-gray-300 text-gray-900 rounded-md focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5   "
+            className="block w-full rounded-md border border-gray-300 bg-gray-50 p-2.5 text-gray-900 focus:border-blue-600 focus:ring-blue-600"
             placeholder="name@company.com"
             required=""
           />
@@ -81,7 +84,7 @@ const Login = () => {
         <div>
           <label
             for="password"
-            className="block mb-2 text-sm font-medium text-gray-900 "
+            className="mb-2 block text-sm font-medium text-gray-900"
           >
             Password
           </label>
@@ -90,21 +93,21 @@ const Login = () => {
             name="password"
             id="password"
             placeholder="••••••••"
-            className="bg-gray-50 border border-gray-300 text-gray-900 rounded-md focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 "
+            className="block w-full rounded-md border border-gray-300 bg-gray-50 p-2.5 text-gray-900 focus:border-blue-600 focus:ring-blue-600"
             required=""
           />
         </div>
         <Button
           type="submit"
-          className="cursor-pointer w-full text-white bg-gray-800 hover:bg-gray-900 focus:ring-4 focus:outline-none focus:ring-gray-500 font-medium rounded-md text-sm px-5 py-2.5 mt-1 text-center "
+          className="mt-1 w-full cursor-pointer rounded-md bg-gray-800 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-gray-900 focus:ring-4 focus:ring-gray-500 focus:outline-none"
         >
           Sign in
         </Button>
-        <p className="text-sm font-light text-gray-500 text-center">
+        <p className="text-center text-sm font-light text-gray-500">
           Don{"'"}t have an account yet?{" "}
           <Link
             href="/auth/register"
-            className="font-medium text-gray-800 hover:underline "
+            className="font-medium text-gray-800 hover:underline"
           >
             Sign up
           </Link>

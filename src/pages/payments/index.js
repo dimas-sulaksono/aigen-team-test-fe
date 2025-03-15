@@ -46,10 +46,10 @@ const PaymentsPage = () => {
 
   return (
     <Section className="min-h-screen">
-      <div className="bg-white shadow p-6 rounded-md">
-        <h1 className="text-xl font-medium mb-8">Make a payment</h1>
+      <div className="rounded-md bg-white p-6 shadow">
+        <h1 className="mb-8 text-xl font-medium">Make a payment</h1>
         <Form onSubmit={handlePayNow}>
-          <div className="lg:grid lg:grid-cols-2 flex flex-col mb-5 gap-4">
+          <div className="mb-5 flex flex-col gap-4 lg:grid lg:grid-cols-2">
             <div className="flex flex-col gap-1.5">
               <label htmlFor="name">Student Name</label>
               <Input
@@ -57,7 +57,7 @@ const PaymentsPage = () => {
                 name="name"
                 id="name"
                 placeholder={"Enter student name"}
-                className=" bg-gray-50 border border-gray-300 text-gray-900 rounded-lg block w-full py-1.5 px-3"
+                className="block w-full rounded-lg border border-gray-300 bg-gray-50 px-3 py-1.5 text-gray-900"
                 readOnly={true}
               />
             </div>
@@ -69,36 +69,36 @@ const PaymentsPage = () => {
                 id="nis"
                 placeholder={"Enter NIS"}
                 readOnly={true}
-                className=" bg-gray-50 border border-gray-300 text-gray-900 rounded-lg block w-full py-1.5 px-3"
+                className="block w-full rounded-lg border border-gray-300 bg-gray-50 px-3 py-1.5 text-gray-900"
               />
             </div>
           </div>
-          <div className="lg:grid lg:grid-cols-1 flex flex-col mb-5">
+          <div className="mb-5 flex flex-col lg:grid lg:grid-cols-1">
             <label htmlFor="payment_name">Payment name</label>
             <Input
-              className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg block w-full py-1.5 px-3"
+              className="block w-full rounded-lg border border-gray-300 bg-gray-50 px-3 py-1.5 text-gray-900"
               name="payment_name"
               id="payment_name"
               type="text"
               placeholder={"Insert Patment Name"}
             />
           </div>
-          <div className="lg:grid lg:grid-cols-1 flex flex-col mb-5">
+          <div className="mb-5 flex flex-col lg:grid lg:grid-cols-1">
             <label htmlFor="description">Description</label>
             <textarea
               rows={4}
-              className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg block w-full py-1.5 px-3"
+              className="block w-full rounded-lg border border-gray-300 bg-gray-50 px-3 py-1.5 text-gray-900"
               name="description"
               id="description"
               type="text"
               placeholder={"Insert Description Payment"}
             />
           </div>
-          <div className="lg:grid lg:grid-cols-1 flex flex-col mb-5">
+          <div className="mb-5 flex flex-col lg:grid lg:grid-cols-1">
             <div className="flex flex-col gap-1.5">
               <label htmlFor="payment_type_id">Payment for</label>
               <select
-                className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg block w-full py-1.5 px-3"
+                className="block w-full rounded-lg border border-gray-300 bg-gray-50 px-3 py-1.5 text-gray-900"
                 name="payment_type_id"
                 id="payment_type_id"
                 onChange={handlePaymentChange}
@@ -110,11 +110,11 @@ const PaymentsPage = () => {
               </select>
             </div>
           </div>
-          <div className="lg:grid lg:grid-cols-1 flex flex-col mb-5">
+          <div className="mb-5 flex flex-col lg:grid lg:grid-cols-1">
             <div className="flex flex-col gap-1.5">
               <label htmlFor="amount">Amount</label>
               <Input
-                className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg block w-full py-1.5 px-3"
+                className="block w-full rounded-lg border border-gray-300 bg-gray-50 px-3 py-1.5 text-gray-900"
                 name="amount"
                 id="amount"
                 type="text"
@@ -126,7 +126,7 @@ const PaymentsPage = () => {
           </div>
           <Button
             type="submit"
-            className="w-full bg-slate-800 hover:bg-slate-900 text-white rounded-lg py-2 cursor-pointer"
+            className="w-full cursor-pointer rounded-lg bg-slate-800 py-2 text-white hover:bg-slate-900"
           >
             Pay Now
           </Button>
