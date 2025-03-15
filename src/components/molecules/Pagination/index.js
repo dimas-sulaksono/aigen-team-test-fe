@@ -49,13 +49,15 @@ export const Pagination = ({ pageable = {} }) => {
       <span className="text-sm font-normal text-gray-500 dark:text-gray-400">
         Showing
         <span className="font-semibold text-gray-900 dark:text-white">
-          {` `}{pageable?.number + 1 || 0} to {pageable?.numberOfElements || 0}
+          {` `}{pageable?.number * pageable?.size + 1 || 0} to {pageable?.number * pageable?.size + pageable?.numberOfElements || 0}
         </span> of <span className="font-semibold text-gray-900 dark:text-white">
           {pageable?.totalElements}
         </span>
       </span>
       <ul className="inline-flex">
-        <li className="">
+        <li onClick={() => {
+          if (!pageable?.first) handleClick(pageNumber);
+        }}>
           <div
             className="flex items-center justify-center h-full py-1.5 px-3 ml-0 text-gray-500 bg-white rounded-l-lg border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
           >
@@ -82,7 +84,9 @@ export const Pagination = ({ pageable = {} }) => {
         {totalPage - pageNumber > 1 && page(pageNumber + 2)}
         {totalPage - pageNumber > 2 && page(pageNumber + 3)}
 
-        <li>
+        <li onClick={() => {
+          if (!pageable?.last) handleClick(pageNumber + 2);
+        }}>
           <a
             href="#"
             className="flex items-center justify-center h-full py-1.5 px-3 leading-tight text-gray-500 bg-white rounded-r-lg border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
