@@ -1,20 +1,16 @@
 import Button from "@/components/atoms/Button";
 import { showNotificationWithTimeout } from "@/redux/notificationSlice";
-import { deleteClass } from "@/services/class";
+import { deleteSchoolYear } from "@/services/schoolYear";
 import React from "react";
 import { MdClose } from "react-icons/md";
-import { useDispatch } from "react-redux";
-
-const DeleteClassModal = ({ data, onClose, onRefresh }) => {
-  const dispatch = useDispatch();
-
+const DeleteSchoolYearModal = ({ data, onClose, dispatch, onRefresh }) => {
   const handleDelete = async () => {
     try {
-      const response = await deleteClass(data.id);
+      const response = await deleteSchoolYear(data.id);
       if (response.status) {
         dispatch(
           showNotificationWithTimeout({
-            message: "Class deleted successfully!",
+            message: "School Year deleted successfully!",
             type: "success",
             duration: 3000,
           }),
@@ -23,10 +19,10 @@ const DeleteClassModal = ({ data, onClose, onRefresh }) => {
         onClose();
       }
     } catch (error) {
-      console.error("Error deleting class:", error);
+      console.error("Error deleting school year:", error);
       dispatch(
         showNotificationWithTimeout({
-          message: "Failed to delete class.",
+          message: "Failed to delete school year.",
           type: "error",
           duration: 3000,
         }),
@@ -60,7 +56,7 @@ const DeleteClassModal = ({ data, onClose, onRefresh }) => {
             />
           </svg>
           <h3 className="mb-5 text-lg font-normal text-gray-500">
-            Are you sure you want to delete <b>{data.name}</b>?
+            Are you sure you want to delete <b>{data.schoolYear}</b>?
           </h3>
 
           <Button
@@ -82,4 +78,4 @@ const DeleteClassModal = ({ data, onClose, onRefresh }) => {
   );
 };
 
-export default DeleteClassModal;
+export default DeleteSchoolYearModal;

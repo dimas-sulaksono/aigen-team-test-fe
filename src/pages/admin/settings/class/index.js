@@ -2,22 +2,27 @@ import Button from "@/components/atoms/Button";
 import Section from "@/components/atoms/Section";
 import AdminLayout from "@/components/templates/AdminLayout";
 import { getAllClass } from "@/services/class";
-import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import AddClassModal from "./AddClassModal";
 import EditClassModal from "./EditClassModal";
 import { getAllSchoolYear } from "@/services/schoolYear";
 import DeleteClassModal from "./deleteClassModal";
+import { useDispatch } from "react-redux";
+import { FaRegTrashCan } from "react-icons/fa6";
+import { FaRegEdit } from "react-icons/fa";
 
 const SettingClassAdminPage = () => {
   const [data, setData] = useState([]);
   const [year, setYear] = useState([]);
+  const [refresh, setRefresh] = useState(false);
   const [addData, setAddData] = useState(false);
   const [editData, setEditData] = useState(false);
   const [deleteData, setDeleteData] = useState(false);
   const [currentPage, setCurrentPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const itemsPerPage = 10;
+
+  const dispatch = useDispatch();
 
   useEffect(() => {
     async function fetchData() {
@@ -29,7 +34,6 @@ const SettingClassAdminPage = () => {
 
     async function fetchYear() {
       const res = await getAllSchoolYear();
-      console.log(res.data.data);
 
       if (res.status) {
         setYear(res.data?.data?.content);
@@ -38,7 +42,7 @@ const SettingClassAdminPage = () => {
 
     fetchYear();
     fetchData();
-  }, [currentPage]);
+  }, [refresh, currentPage]);
 
   const handlePageChange = (page) => {
     if (page > 0 && page <= totalPages) {
@@ -58,7 +62,7 @@ const SettingClassAdminPage = () => {
               <div className="flex flex-row justify-between">
                 <Button
                   onClick={() => setAddData(true)}
-                  className="rounded-lg bg-blue-600 px-4 py-2 text-sm text-white transition hover:bg-blue-700"
+                  className="cursor-pointer rounded-lg bg-blue-600 px-4 py-2 text-sm text-white transition hover:bg-blue-700"
                 >
                   + Add Class
                 </Button>
@@ -92,16 +96,16 @@ const SettingClassAdminPage = () => {
                       <td className="px-6 py-4">{item.createdAt}</td>
                       <td className="flex gap-3 px-6 py-4">
                         <Button
-                          className="text-blue-600 hover:underline"
+                          className="cursor-pointer text-blue-600 hover:text-blue-700"
                           onClick={() => setEditData(item)}
                         >
-                          Edit
+                          <FaRegEdit size={18} />
                         </Button>
                         <Button
-                          className="text-blue-600 hover:underline"
+                          className="cursor-pointer text-red-600 hover:text-red-700"
                           onClick={() => setDeleteData(item)}
                         >
-                          Delete
+                          <FaRegTrashCan size={18} />
                         </Button>
                       </td>
                     </tr>
@@ -117,49 +121,59 @@ const SettingClassAdminPage = () => {
           >
             <ul className="inline-flex h-8 -space-x-px text-sm rtl:space-x-reverse">
               <li>
-                <button
+                <Button
                   onClick={() => handlePageChange(currentPage - 1)}
                   disabled={currentPage === 1}
                   className={`ms-0 flex h-8 items-center justify-center rounded-s-lg border border-gray-300 px-3 leading-tight ${currentPage === 1 ? "cursor-not-allowed bg-gray-200 text-gray-400" : "bg-white text-gray-500 hover:bg-gray-100 hover:text-gray-700"}`}
                 >
                   Previous
-                </button>
+                </Button>
               </li>
 
               {Array.from({ length: totalPages }, (_, i) => (
                 <li key={i}>
-                  <button
+                  <Button
                     onClick={() => handlePageChange(i + 1)}
                     className={`flex h-8 items-center justify-center border px-3 leading-tight ${currentPage === i + 1 ? "bg-blue-50 text-blue-600" : "bg-white text-gray-500 hover:bg-gray-100 hover:text-gray-700"}`}
                   >
                     {i + 1}
-                  </button>
+                  </Button>
                 </li>
               ))}
 
               <li>
-                <button
+                <Button
                   onClick={() => handlePageChange(currentPage + 1)}
                   disabled={currentPage === totalPages}
                   className={`flex h-8 items-center justify-center rounded-e-lg border px-3 leading-tight ${currentPage === totalPages ? "cursor-not-allowed bg-gray-200 text-gray-400" : "bg-white text-gray-500 hover:bg-gray-100 hover:text-gray-700"}`}
                 >
                   Next
-                </button>
+                </Button>
               </li>
             </ul>
           </nav>
         </Section>
       </AdminLayout>
-      {addData && <AddClassModal onClose={() => setAddData(false)} />}
+      {addData && (
+        <AddClassModal
+          onClose={() => setAddData(false)}
+          year={year}
+          dispatch={dispatch}
+          onRefresh={() => setRefresh((prev) => !prev)}
+        />
+      )}
       {editData && (
         <EditClassModal
           onClose={() => setEditData(null)}
           data={editData}
           year={year}
+          dispatch={dispatch}
+          onRefresh={() => setRefresh((prev) => !prev)}
         />
       )}
       {deleteData && (
         <DeleteClassModal
+          onRefresh={() => setRefresh((prev) => !prev)}
           onClose={() => setDeleteData(null)}
           data={deleteData}
         />
