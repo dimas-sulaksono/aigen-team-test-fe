@@ -3,25 +3,27 @@ import Form from "@/components/atoms/Form";
 import Input from "@/components/atoms/Input";
 import { showNotificationWithTimeout } from "@/redux/notificationSlice";
 import { updateClass } from "@/services/class";
+import { updateSchoolYear } from "@/services/schoolYear";
 import React from "react";
 import { IoMdClose } from "react-icons/io";
 
-const EditClassModal = ({ onClose, data, dispatch, year, onRefresh }) => {
+const EditSchoolYearModal = ({ onClose, data, dispatch, onRefresh }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const payload = {
-      name: e.target.className.value,
-      schoolYearId: e.target.schoolYear.value,
+      schoolYear: e.target.schoolYear.value,
+      startDate: e.target.startDate.value,
+      endDate: e.target.endDate.value,
     };
 
     try {
-      const response = await updateClass(data.id, payload);
+      const response = await updateSchoolYear(data.id, payload);
       if (response.status) {
         onClose();
         onRefresh();
         dispatch(
           showNotificationWithTimeout({
-            message: "Class updated successfully!",
+            message: "School year updated successfully!",
             type: "success",
             duration: 3000,
           }),
@@ -50,53 +52,68 @@ const EditClassModal = ({ onClose, data, dispatch, year, onRefresh }) => {
     <div className="bg-opacity-50 fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm">
       <div className="w-full max-w-lg rounded-2xl bg-white p-6 shadow-xl">
         <div className="flex items-center justify-between border-b pb-3">
-          <h2 className="text-2xl font-semibold text-gray-800">Edit Class</h2>
-          <Button
+          <h2 className="text-2xl font-semibold text-gray-800">
+            Edit school year
+          </h2>
+          <button
             onClick={onClose}
             className="text-gray-500 transition hover:text-gray-900"
           >
             <IoMdClose size={24} />
-          </Button>
+          </button>
         </div>
 
         <Form className="mt-3 p-3" onSubmit={handleSubmit}>
           <div className="mb-4 grid grid-cols-2 gap-4">
             <div className="col-span-2">
               <label
-                htmlFor="className"
+                htmlFor="schoolYear"
                 className="mb-2 block text-sm font-medium text-gray-900"
               >
-                Name
+                School year
               </label>
               <Input
                 type="text"
-                name="className"
-                id="className"
+                name="schoolYear"
+                id="schoolYear"
                 className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-600 focus:ring-blue-600"
-                defaultValue={data.name}
+                placeholder="Example : 2024/2025"
+                defaultValue={data.schoolYear}
                 required
               />
             </div>
 
             <div className="col-span-2 sm:col-span-1">
               <label
-                htmlFor="schoolYear"
+                htmlFor="startDate"
                 className="mb-2 block text-sm font-medium text-gray-900"
               >
-                School Year
+                Start Date
               </label>
-              <select
-                id="schoolYear"
-                name="schoolYear"
-                className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500"
+              <Input
+                type="date"
+                name="startDate"
+                id="startDate"
+                defaultValue={data.startDate}
+                className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-600 focus:ring-blue-600"
+                required
+              />
+            </div>
+            <div className="col-span-2 sm:col-span-1">
+              <label
+                htmlFor="endDate"
+                className="mb-2 block text-sm font-medium text-gray-900"
               >
-                <option value={data?.year}>{data?.year}</option>
-                {year?.map((y) => (
-                  <option key={y.id} value={y.id}>
-                    {y.schoolYear}
-                  </option>
-                ))}
-              </select>
+                Start Date
+              </label>
+              <Input
+                type="date"
+                name="endDate"
+                id="endDate"
+                defaultValue={data.endDate}
+                className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-600 focus:ring-blue-600"
+                required
+              />
             </div>
           </div>
 
@@ -116,7 +133,7 @@ const EditClassModal = ({ onClose, data, dispatch, year, onRefresh }) => {
                 clipRule="evenodd"
               ></path>
             </svg>
-            Update class
+            Update school year
           </Button>
         </Form>
       </div>
@@ -124,4 +141,4 @@ const EditClassModal = ({ onClose, data, dispatch, year, onRefresh }) => {
   );
 };
 
-export default EditClassModal;
+export default EditSchoolYearModal;

@@ -1,38 +1,82 @@
 import Button from "@/components/atoms/Button";
 import Form from "@/components/atoms/Form";
 import Input from "@/components/atoms/Input";
+import { showNotificationWithTimeout } from "@/redux/notificationSlice";
+import { addClass } from "@/services/class";
 import React from "react";
 import { IoMdClose } from "react-icons/io";
 
-const AddClassModal = ({ onClose }) => {
+const AddClassModal = ({ onClose, year, dispatch, onRefresh }) => {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const payload = {
+      name: e.target.className.value,
+      schoolYearId: e.target.schoolYear.value,
+    };
+
+    try {
+      const response = await addClass(payload);
+      console.log(response);
+
+      if (response.status) {
+        onClose();
+        onRefresh();
+        dispatch(
+          showNotificationWithTimeout({
+            message: "Class added successfully!",
+            type: "success",
+            duration: 3000,
+          }),
+        );
+      } else {
+        dispatch(
+          showNotificationWithTimeout({
+            message: response.message?.data?.data,
+            type: "error",
+            duration: 5000,
+          }),
+        );
+      }
+    } catch (error) {
+      dispatch(
+        showNotificationWithTimeout({
+          message: response.message?.data?.data,
+          type: "error",
+          duration: 5000,
+        }),
+      );
+    }
+  };
+
   return (
     <div className="bg-opacity-50 fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm">
       <div className="w-full max-w-lg rounded-2xl bg-white p-6 shadow-xl">
         <div className="flex items-center justify-between border-b pb-3">
           <h2 className="text-2xl font-semibold text-gray-800">Add Class</h2>
-          <button
+          <Button
             onClick={onClose}
-            className="text-gray-500 transition hover:text-gray-900"
+            className="cursor-pointer text-gray-500 transition hover:text-gray-900"
           >
             <IoMdClose size={24} />
-          </button>
+          </Button>
         </div>
 
-        <Form className="p-3">
+        <Form className="p-3" onSubmit={handleSubmit}>
           <div className="mb-4 grid grid-cols-2 gap-4">
             <div className="col-span-2">
               <label
-                htmlFor="name"
+                htmlFor="className"
                 className="mb-2 block text-sm font-medium text-gray-900"
               >
                 Class Name
               </label>
               <Input
                 type="text"
-                name="name"
-                id="name"
+                name="className"
+                id="className"
                 className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-600 focus:ring-blue-600"
-                placeholder="Insert student name"
+                placeholder="Insert className"
                 required
               />
             </div>
@@ -46,20 +90,23 @@ const AddClassModal = ({ onClose }) => {
               </label>
               <select
                 id="schoolYear"
+                name="schoolYear"
                 className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500"
                 required
               >
-                <option value="">Select class</option>
-                <option value="10">Class 10</option>
-                <option value="11">Class 11</option>
-                <option value="12">Class 12</option>
+                <option>Select school year</option>
+                {year?.map((y) => (
+                  <option key={y.id} value={y.id}>
+                    {y.schoolYear}
+                  </option>
+                ))}
               </select>
             </div>
           </div>
 
           <Button
             type="submit"
-            className="flex items-center rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 focus:outline-none"
+            className="flex cursor-pointer items-center rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 focus:outline-none"
           >
             <svg
               className="mr-2 h-5 w-5"
