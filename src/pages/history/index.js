@@ -1,6 +1,7 @@
 import { Row } from '@/components/atoms/Row';
 import Bar from '@/components/molecules/HistoryBar';
 import { Pagination } from '@/components/molecules/Pagination';
+import { Details } from '@/components/molecules/PaymentDetails';
 import { getUserPaymentHistory } from '@/services/payment';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
@@ -8,6 +9,7 @@ import React, { useEffect, useState } from 'react';
 const HistoryPage = () => {
   const router = useRouter();
   const [data, setData] = useState();
+  const [dataDetails, setDataDetails] = useState({});
   const [pageable, setPageable] = useState();
 
   const fetchPaymentUser = async () => {
@@ -18,23 +20,29 @@ const HistoryPage = () => {
       setData(content);
       setPageable(pageable);
 
-    } else {
-      console.log(response.message);
     }
 
   };
 
 
   useEffect(() => {
+    if (!localStorage.getItem("token")) router.replace("/auth/login");
     fetchPaymentUser();
   }, [router]);
 
+  const handleShow = () => {
+    console.log("show");
 
-
+    const element = document.getElementById("details");
+    element.classList.toggle("hidden");
+    element.classList.toggle("z-10");
+    element.classList.toggle("flex");
+  };
 
   return (
-    <section className="bg-gray-50 dark:bg-gray-900 p-3 sm:p-5 flex-grow flex flex-col">
-      <div className="mx-auto max-w-screen-xl px-4 lg:px-12 w-full flex-grow flex flex-col">
+
+    <section className="bg-gray-50 dark:bg-gray-900 flex-grow flex flex-col relative">
+      <div className="p-3 sm:p-5 mx-auto max-w-screen-xl px-4 lg:px-12 w-full flex-grow flex flex-col">
         <div className="bg-white dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden flex-grow flex flex-col">
           {/* Search & Filter */}
           <Bar />
@@ -44,22 +52,14 @@ const HistoryPage = () => {
               {/* Table Head */}
               <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                 <tr>
-                  <th scope="col" className="px-4 py-3">
-                    Payment type
+                  <th scope="col" className="px-10 py-3 w-3/5 truncate">
+                    Payment Name
                   </th>
-                  <th scope="col" className="px-4 py-3">
-                    Payment name
-                  </th>
-                  <th scope="col" className="px-4 py-3">
-                    School Year
-                  </th>
-                  <th scope="col" className="px-4 py-3">
-                    Amount
-                  </th>
-                  <th scope="col" className="px-4 py-3">
+
+                  <th scope="col" className="px-4 py-3 w-1/5">
                     Status
                   </th>
-                  <th scope="col" className="px-4 py-3">
+                  <th scope="col" className="px-4 py-3 w-1/5">
                     <span className="sr-only">Actions</span>
                   </th>
                 </tr>
@@ -67,7 +67,8 @@ const HistoryPage = () => {
               {/* Table Body */}
               <tbody>
                 {data?.map(item => (
-                  <Row key={item.id} data={item} />
+
+                  <Row key={item.id} data={item} handleShow={handleShow} setDataDetails={setDataDetails} />
                 ))}
 
               </tbody>
@@ -79,7 +80,11 @@ const HistoryPage = () => {
           )}
         </div>
       </div>
+      <div id='details' className="absolute bg-gray-300/60 w-full h-full flex flex-col justify-center items-center">
+        <Details handleShow={handleShow} data={dataDetails} />
+      </div>
     </section>
+
 
   );
 };

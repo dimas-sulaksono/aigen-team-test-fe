@@ -12,9 +12,8 @@ const PaymentsPage = () => {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-
     if (!token) {
-      router.push("/auth/login");
+      router.replace("/auth/login");
     } else {
       setLoading(false);
     }
@@ -45,7 +44,7 @@ const PaymentsPage = () => {
   };
 
   return (
-    <Section className="min-h-screen">
+    <Section className="">
       <div className="rounded-md bg-white p-6 shadow">
         <h1 className="mb-8 text-xl font-medium">Make a payment</h1>
         <Form onSubmit={handlePayNow}>
