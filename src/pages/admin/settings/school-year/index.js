@@ -5,7 +5,7 @@ import Section from "@/components/atoms/Section";
 import AdminLayout from "@/components/templates/AdminLayout";
 import { getAllSchoolYear } from "@/services/schoolYear";
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { FaRegEdit } from "react-icons/fa";
 import { FaRegTrashCan } from "react-icons/fa6";
 import { useDispatch } from "react-redux";
@@ -25,16 +25,16 @@ const SettingSchoolYearAdminPage = () => {
 
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    async function fetchData() {
-      const res = await getAllSchoolYear(currentPage, itemsPerPage);
-
-      if (res.status) {
-        setData(res.data?.data?.content);
-      }
+  const fetchData = useCallback(async () => {
+    const res = await getAllSchoolYear(currentPage, itemsPerPage);
+    if (res.status) {
+      setData(res.data?.data?.content);
     }
+  }, [currentPage, itemsPerPage]);
+
+  useEffect(() => {
     fetchData();
-  }, [refresh, currentPage]);
+  }, [refresh, fetchData]);
 
   const handlePageChange = (page) => {
     if (page > 0 && page <= totalPages) {
