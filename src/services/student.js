@@ -73,3 +73,13 @@ export const filterStudent = async (
     return { status: false, message: error.response };
   }
 };
+
+export const getStudentByUsername = async (username) => {
+  try {
+    const res = await axios.get(`${api}/student/${username}`);
+    return { status: true, data: res.data };
+  } catch (error) {
+    console.log(error);
+    return { status: false, message: error.response };
+  }
+};
