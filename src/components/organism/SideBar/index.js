@@ -106,6 +106,19 @@ const SideBarAdmin = ({ children }) => {
                     </Link>
                   </li>
                   <li>
+                    <Link
+                      href={"/admin/settings/payment-type"}
+                      className={`block w-full px-4 py-2 text-left hover:bg-gray-100 ${
+                        isActive("/admin/settings/payment-type")
+                          ? "bg-gray-300"
+                          : "text-gray-600 hover:bg-gray-200"
+                      }`}
+                      onClick={() => dispatch(closeAll())}
+                    >
+                      Payment Type
+                    </Link>
+                  </li>
+                  <li>
                     <Button
                       className="block w-full px-4 py-2 text-left text-red-600 hover:bg-red-100"
                       onClick={() => {
