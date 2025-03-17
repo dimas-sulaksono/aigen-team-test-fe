@@ -57,3 +57,30 @@ export const deleteSchoolYear = async (id) => {
     return { status: false, message: error.response };
   }
 };
+
+export const softDeleteSchoolYear = async (id) => {
+  try {
+    const res = await axios.put(
+      `${api}/school-years/soft-delete/${id}`,
+      {},
+      getAuthHeader(),
+    );
+    return { status: true, data: res.data };
+  } catch (error) {
+    console.log(error);
+    return { status: false, message: error.response };
+  }
+};
+
+export const searchSchoolYear = async (years) => {
+  try {
+    const res = await axios.get(
+      `${api}/school-years/search?years=${years}`,
+      getAuthHeader(),
+    );
+    return { status: true, data: res.data };
+  } catch (error) {
+    console.log(error);
+    return { status: false, message: error.response };
+  }
+};

@@ -14,7 +14,7 @@ const DeleteClassModal = ({ data, onClose, onRefresh }) => {
       if (response.status) {
         dispatch(
           showNotificationWithTimeout({
-            message: "Class deleted successfully!",
+            message: "Class permanent deleted successfully!",
             type: "success",
             duration: 3000,
           }),
@@ -60,7 +60,7 @@ const DeleteClassModal = ({ data, onClose, onRefresh }) => {
             />
           </svg>
           <h3 className="mb-5 text-lg font-normal text-gray-500">
-            Are you sure you want to delete <b>{data.name}</b>?
+            Are you sure you want to permanent delete <b>{data.name}</b>?
           </h3>
 
           <Button

@@ -1,16 +1,18 @@
 import Button from "@/components/atoms/Button";
 import { showNotificationWithTimeout } from "@/redux/notificationSlice";
-import { deleteSchoolYear } from "@/services/schoolYear";
+import { softDeleteClass } from "@/services/class";
 import React from "react";
 import { MdClose } from "react-icons/md";
-const DeleteSchoolYearModal = ({ data, onClose, dispatch, onRefresh }) => {
+const SoftDeleteClassModal = ({ data, onClose, dispatch, onRefresh }) => {
   const handleDelete = async () => {
     try {
-      const response = await deleteSchoolYear(data.id);
+      const response = await softDeleteClass(data.id);
+      console.log(response);
+
       if (response.status) {
         dispatch(
           showNotificationWithTimeout({
-            message: "School Year permanent deleted successfully!",
+            message: "Class deleted successfully!",
             type: "success",
             duration: 3000,
           }),
@@ -19,10 +21,10 @@ const DeleteSchoolYearModal = ({ data, onClose, dispatch, onRefresh }) => {
         onClose();
       }
     } catch (error) {
-      console.error("Error deleting school year:", error);
+      console.error("Error deleting Class:", error);
       dispatch(
         showNotificationWithTimeout({
-          message: "Failed to delete school year.",
+          message: "Failed to delete Class.",
           type: "error",
           duration: 3000,
         }),
@@ -56,7 +58,7 @@ const DeleteSchoolYearModal = ({ data, onClose, dispatch, onRefresh }) => {
             />
           </svg>
           <h3 className="mb-5 text-lg font-normal text-gray-500">
-            Are you sure you want to permanent delete <b>{data.schoolYear}</b>?
+            Are you sure you want to delete <b>{data.name}</b>?
           </h3>
 
           <Button
@@ -78,4 +80,4 @@ const DeleteSchoolYearModal = ({ data, onClose, dispatch, onRefresh }) => {
   );
 };
 
-export default DeleteSchoolYearModal;
+export default SoftDeleteClassModal;
