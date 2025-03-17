@@ -2,7 +2,7 @@ import Button from "@/components/atoms/Button";
 import Section from "@/components/atoms/Section";
 import AdminLayout from "@/components/templates/AdminLayout";
 import { getAllClass } from "@/services/class";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import AddClassModal from "./AddClassModal";
 import EditClassModal from "./EditClassModal";
 import { getAllSchoolYear } from "@/services/schoolYear";
@@ -24,31 +24,31 @@ const SettingClassAdminPage = () => {
 
   const dispatch = useDispatch();
 
+  const fetchData = useCallback(async () => {
+    const res = await getAllClass(currentPage, itemsPerPage);
+    if (res.status) {
+      setData(res.data?.content);
+    }
+  }, [currentPage, itemsPerPage]);
+
+  const fetchYear = useCallback(async () => {
+    const res = await getAllSchoolYear(currentPage, itemsPerPage);
+    if (res.status) {
+      setYear(res.data?.data?.content);
+    }
+  }, [currentPage, itemsPerPage]);
+
   useEffect(() => {
-    async function fetchData() {
-      const res = await getAllClass(currentPage, itemsPerPage);
-      if (res.status) {
-        setData(res.data.content);
-      }
-    }
-
-    async function fetchYear() {
-      const res = await getAllSchoolYear();
-
-      if (res.status) {
-        setYear(res.data?.data?.content);
-      }
-    }
-
     fetchYear();
     fetchData();
-  }, [refresh, currentPage]);
+  }, [fetchData, fetchYear, refresh]);
 
   const handlePageChange = (page) => {
     if (page > 0 && page <= totalPages) {
       setCurrentPage(page);
     }
   };
+
   return (
     <>
       {" "}

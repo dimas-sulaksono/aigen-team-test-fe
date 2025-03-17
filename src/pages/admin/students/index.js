@@ -1,36 +1,64 @@
 import Button from "@/components/atoms/Button";
 import Section from "@/components/atoms/Section";
 import AdminLayout from "@/components/templates/AdminLayout";
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import StudentDetailModal from "./StudentDetailModal";
 import AddStudentModal from "./AddStudentModal";
 import EditStudentModal from "./EditStudentModal";
 import { IoMdClose } from "react-icons/io";
-import { FaFilter } from "react-icons/fa6";
-import { useSelector } from "react-redux";
+import { FaFilter, FaTrash } from "react-icons/fa6";
+import { useDispatch, useSelector } from "react-redux";
 import Form from "@/components/atoms/Form";
 import Input from "@/components/atoms/Input";
-import Link from "next/link";
+import { BiDetail } from "react-icons/bi";
+import { getAllStudent } from "@/services/student";
+import { current } from "@reduxjs/toolkit";
+import { getAllClass } from "@/services/class";
+import { FaEdit } from "react-icons/fa";
+import DeleteStudentModal from "./DeleteStudentModal";
 
 const StudentsAdminPage = () => {
+  const [data, setData] = useState([]);
+  const [classes, setClasses] = useState([]);
   const [selectedStudent, setSelectedStudent] = useState(false);
   const [addStudent, setAddStudent] = useState(false);
   const [editStudent, setEditStudent] = useState(false);
+  const [deleteStudent, setDeleteStudent] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const [refresh, setRefresh] = useState(false);
   const [selectedClass, setSelectedClass] = useState("Any");
+  const [currentPage, setCurrentPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
+  const itemsPerPage = 30;
 
-  const classes = ["Any", "Class A", "Class B", "Class C", "Class D"];
+  const dispatch = useDispatch();
 
-  const data = [
-    {
-      id: 1,
-      name: "Muhammad",
-      nis: "123456",
-      class: "XII RPL 1",
-      birthdate: "01-01-2000",
-      phone: "08123456789",
-    },
-  ];
+  const fetchData = useCallback(async () => {
+    const res = await getAllStudent(currentPage, itemsPerPage);
+    if (res.status) {
+      setData(res.data.content);
+    }
+  }, [currentPage, itemsPerPage]);
+
+  const fetchClass = useCallback(async () => {
+    const res = await getAllClass(currentPage, itemsPerPage);
+    if (res.status) {
+      setClasses(res.data.content);
+    }
+  }, [currentPage, itemsPerPage]);
+
+  useEffect(() => {
+    fetchData();
+    fetchClass();
+  }, [fetchData, fetchClass, refresh]);
+
+  const handlePageChange = (page) => {
+    if (page > 0 && page <= totalPages) {
+      setCurrentPage(page);
+    }
+  };
+
+  console.log(data);
 
   return (
     <>
@@ -43,24 +71,14 @@ const StudentsAdminPage = () => {
               </h2>
               <div className="flex flex-row justify-between">
                 <div className="flex gap-2 text-sm">
-                  <Form className="flex flex-row items-center overflow-hidden rounded-md border border-gray-300">
-                    <Input
-                      type="text"
-                      placeholder="Search invoice"
-                      className="border-0 bg-gray-50 text-sm text-gray-900 focus:border-blue-600 focus:ring-blue-600"
-                    />
-                    <Button className="h-full cursor-pointer bg-blue-600 px-2 text-sm text-white">
-                      Search
-                    </Button>
-                  </Form>
                   <Button
                     onClick={() => setIsOpen(!isOpen)}
-                    className="flex items-center gap-1 rounded-md border border-gray-300 bg-transparent px-4 py-2 transition"
+                    className="relative flex items-center gap-1 rounded-md border border-gray-300 bg-transparent px-4 py-2 transition"
                   >
                     <FaFilter /> Filters
                   </Button>
                   {isOpen && (
-                    <div className="absolute left-0 z-50 mt-2 w-60 rounded-lg bg-white p-4 shadow-lg">
+                    <Form className="absolute z-50 mt-10 w-60 rounded-lg bg-white p-4 shadow-lg">
                       <div className="flex items-center justify-between border-b pb-2">
                         <h3 className="text-lg font-semibold text-gray-800">
                           Filter
@@ -77,30 +95,45 @@ const StudentsAdminPage = () => {
                           Class
                         </label>
                         <select
-                          className="mt-1 w-full rounded-lg border border-gray-300 p-2 focus:border-blue-500 focus:ring-blue-500"
+                          className="mt-1 w-full rounded-lg border border-gray-300 p-2 text-sm focus:border-blue-500 focus:ring-blue-500"
                           value={selectedClass}
                           onChange={(e) => setSelectedClass(e.target.value)}
                         >
+                          <option value="Any">Any</option>
                           {classes.map((cls) => (
-                            <option key={cls} value={cls}>
-                              {cls}
+                            <option key={cls.id} value={cls.id}>
+                              {cls.name} - {cls.year}
                             </option>
                           ))}
                         </select>
                       </div>
+
                       <div className="mt-4 flex justify-end gap-2">
                         <Button
                           className="rounded-lg bg-gray-200 px-4 py-2 text-gray-700 hover:bg-gray-300"
-                          onClick={() => setSelectedClass("Any")}
+                          type="reset"
                         >
                           Reset
                         </Button>
-                        <Button className="rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-700">
+                        <Button
+                          className="rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
+                          type="submit"
+                        >
                           Apply
                         </Button>
                       </div>
-                    </div>
+                    </Form>
                   )}
+                  <Form className="flex flex-row items-center overflow-hidden rounded-md border border-gray-300">
+                    <Input
+                      type="text"
+                      placeholder="Search invoice"
+                      className="border-0 bg-gray-50 text-sm text-gray-900 focus:border-blue-600 focus:ring-blue-600"
+                    />
+                    <Button className="h-full cursor-pointer bg-blue-600 px-2 text-sm text-white">
+                      Search
+                    </Button>
+                  </Form>
                 </div>
 
                 <Button
@@ -123,7 +156,6 @@ const StudentsAdminPage = () => {
                     <th className="px-6 py-3">NIS</th>
                     <th className="px-6 py-3">Class</th>
                     <th className="px-6 py-3">Birthdate</th>
-                    <th className="px-6 py-3">Phone</th>
                     <th className="px-6 py-3">Action</th>
                   </tr>
                 </thead>
@@ -138,21 +170,26 @@ const StudentsAdminPage = () => {
                         {item.name}
                       </td>
                       <td className="px-6 py-4">{item.nis}</td>
-                      <td className="px-6 py-4">{item.class}</td>
+                      <td className="px-6 py-4">{item.className}</td>
                       <td className="px-6 py-4">{item.birthdate}</td>
-                      <td className="px-6 py-4">{item.phone}</td>
                       <td className="flex gap-3 px-6 py-4">
                         <Button
                           onClick={() => setSelectedStudent(item)}
-                          className="text-green-600 hover:underline"
+                          className="cursor-pointer text-green-600 hover:text-green-700"
                         >
-                          Detail
+                          <BiDetail size={18} />
                         </Button>
                         <Button
-                          className="text-blue-600 hover:underline"
+                          className="cursor-pointer text-blue-600 hover:text-blue-700"
                           onClick={() => setEditStudent(item)}
                         >
-                          Edit
+                          <FaEdit size={18} />
+                        </Button>
+                        <Button
+                          className="cursor-pointer text-red-600 hover:text-red-700"
+                          onClick={() => setDeleteStudent(item)}
+                        >
+                          <FaTrash size={16} />
                         </Button>
                       </td>
                     </tr>
@@ -162,70 +199,39 @@ const StudentsAdminPage = () => {
             </div>
           </div>
           <nav
-            className="flex-column flex flex-wrap items-center justify-between py-4 md:flex-row"
+            className="flex-column flex items-center justify-end py-4 md:flex-row"
             aria-label="Table navigation"
           >
-            <span className="mb-4 block w-full text-sm font-normal text-gray-500 md:mb-0 md:inline md:w-auto">
-              Showing <span className="font-semibold text-gray-900">1-10</span>{" "}
-              of <span className="font-semibold text-gray-900">1000</span>
-            </span>
             <ul className="inline-flex h-8 -space-x-px text-sm rtl:space-x-reverse">
               <li>
-                <Link
-                  href="#"
-                  className="ms-0 flex h-8 items-center justify-center rounded-s-lg border border-gray-300 bg-white px-3 leading-tight text-gray-500 hover:bg-gray-100 hover:text-gray-700"
+                <Button
+                  onClick={() => handlePageChange(currentPage - 1)}
+                  disabled={currentPage === 1}
+                  className={`ms-0 flex h-8 items-center justify-center rounded-s-lg border border-gray-300 px-3 leading-tight ${currentPage === 1 ? "cursor-not-allowed bg-gray-200 text-gray-400" : "bg-white text-gray-500 hover:bg-gray-100 hover:text-gray-700"}`}
                 >
                   Previous
-                </Link>
+                </Button>
               </li>
+
+              {Array.from({ length: totalPages }, (_, i) => (
+                <li key={i}>
+                  <Button
+                    onClick={() => handlePageChange(i + 1)}
+                    className={`flex h-8 items-center justify-center border px-3 leading-tight ${currentPage === i + 1 ? "bg-blue-50 text-blue-600" : "bg-white text-gray-500 hover:bg-gray-100 hover:text-gray-700"}`}
+                  >
+                    {i + 1}
+                  </Button>
+                </li>
+              ))}
+
               <li>
-                <Link
-                  href="#"
-                  className="flex h-8 items-center justify-center border border-gray-300 bg-white px-3 leading-tight text-gray-500 hover:bg-gray-100 hover:text-gray-700"
-                >
-                  1
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="#"
-                  className="flex h-8 items-center justify-center border border-gray-300 bg-white px-3 leading-tight text-gray-500 hover:bg-gray-100 hover:text-gray-700"
-                >
-                  2
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="#"
-                  aria-current="page"
-                  className="flex h-8 items-center justify-center border border-gray-300 bg-blue-50 px-3 text-blue-600 hover:bg-blue-100 hover:text-blue-700"
-                >
-                  3
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="#"
-                  className="flex h-8 items-center justify-center border border-gray-300 bg-white px-3 leading-tight text-gray-500 hover:bg-gray-100 hover:text-gray-700"
-                >
-                  4
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="#"
-                  className="flex h-8 items-center justify-center border border-gray-300 bg-white px-3 leading-tight text-gray-500 hover:bg-gray-100 hover:text-gray-700"
-                >
-                  5
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="#"
-                  className="flex h-8 items-center justify-center rounded-e-lg border border-gray-300 bg-white px-3 leading-tight text-gray-500 hover:bg-gray-100 hover:text-gray-700"
+                <Button
+                  onClick={() => handlePageChange(currentPage + 1)}
+                  disabled={currentPage === totalPages}
+                  className={`flex h-8 items-center justify-center rounded-e-lg border px-3 leading-tight ${currentPage === totalPages ? "cursor-not-allowed bg-gray-200 text-gray-400" : "bg-white text-gray-500 hover:bg-gray-100 hover:text-gray-700"}`}
                 >
                   Next
-                </Link>
+                </Button>
               </li>
             </ul>
           </nav>
@@ -237,11 +243,29 @@ const StudentsAdminPage = () => {
           onClose={() => setSelectedStudent(null)}
         />
       )}
-      {addStudent && <AddStudentModal onClose={() => setAddStudent(false)} />}
+      {addStudent && (
+        <AddStudentModal
+          dispatch={dispatch}
+          onClose={() => setAddStudent(false)}
+          onRefresh={() => setRefresh((prev) => !prev)}
+          classes={classes}
+        />
+      )}
       {editStudent && (
         <EditStudentModal
           onClose={() => setEditStudent(null)}
           user={editStudent}
+          onRefresh={() => setRefresh((prev) => !prev)}
+          classes={classes}
+          dispatch={dispatch}
+        />
+      )}
+      {deleteStudent && (
+        <DeleteStudentModal
+          onClose={() => setDeleteStudent(null)}
+          data={deleteStudent}
+          onRefresh={() => setRefresh((prev) => !prev)}
+          dispatch={dispatch}
         />
       )}
     </>
