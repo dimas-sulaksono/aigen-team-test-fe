@@ -52,3 +52,31 @@ export const deleteClass = async (id) => {
     return { status: false, message: error.response };
   }
 };
+
+export const searchClass = async (name, page = 0, size = 10) => {
+  try {
+    const res = await axios.get(
+      `${api}/class/search?name=${name}&page=${page}&size=${size}`,
+      getAuthHeader(),
+    );
+    return { status: true, data: res.data };
+  } catch (error) {
+    console.log(error);
+    return { status: false, message: error.response };
+  }
+};
+
+export const softDeleteClass = async (id) => {
+  try {
+    const res = await axios.patch(
+      `${api}/class/soft-delete/${id}`,
+      {},
+      getAuthHeader(),
+    );
+
+    return { status: true, data: res.data };
+  } catch (error) {
+    console.log(error);
+    return { status: false, message: error.response };
+  }
+};

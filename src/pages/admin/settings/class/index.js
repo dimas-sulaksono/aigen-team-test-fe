@@ -1,22 +1,28 @@
 import Button from "@/components/atoms/Button";
 import Section from "@/components/atoms/Section";
 import AdminLayout from "@/components/templates/AdminLayout";
-import { getAllClass } from "@/services/class";
+import { getAllClass, searchClass } from "@/services/class";
 import React, { useCallback, useEffect, useState } from "react";
 import AddClassModal from "./AddClassModal";
 import EditClassModal from "./EditClassModal";
 import { getAllSchoolYear } from "@/services/schoolYear";
 import DeleteClassModal from "./deleteClassModal";
 import { useDispatch } from "react-redux";
-import { FaRegTrashCan } from "react-icons/fa6";
+import { FaRegTrashCan, FaTrash } from "react-icons/fa6";
 import { FaRegEdit } from "react-icons/fa";
+import SoftDeleteClassModal from "./softDeleteClassModal";
+import Input from "@/components/atoms/Input";
+import Form from "@/components/atoms/Form";
+import { useRouter } from "next/router";
 
 const SettingClassAdminPage = () => {
+  const router = useRouter();
   const [data, setData] = useState([]);
   const [year, setYear] = useState([]);
   const [refresh, setRefresh] = useState(false);
   const [addData, setAddData] = useState(false);
   const [editData, setEditData] = useState(false);
+  const [softDeleteData, setSoftDeleteData] = useState(false);
   const [deleteData, setDeleteData] = useState(false);
   const [currentPage, setCurrentPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
@@ -43,15 +49,38 @@ const SettingClassAdminPage = () => {
     fetchData();
   }, [fetchData, fetchYear, refresh]);
 
+  const handleSearch = async (e) => {
+    e.preventDefault();
+    const name = e.target.search.value;
+    router.push({
+      pathname: "/admin/settings/class",
+      query: { name, page: 0, size: 10 },
+    });
+    try {
+      const response = await searchClass(name, 0, 10);
+      console.log(response);
+
+      if (response.status) {
+        const searchData = response.data.content;
+        setData(searchData);
+      } else {
+        console.error(response.message);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   const handlePageChange = (page) => {
     if (page > 0 && page <= totalPages) {
       setCurrentPage(page);
     }
   };
 
+  // console.log(data);
+
   return (
     <>
-      {" "}
       <AdminLayout>
         <Section>
           <div className="rounded-lg bg-white p-6 shadow-md">
@@ -66,6 +95,23 @@ const SettingClassAdminPage = () => {
                 >
                   + Add Class
                 </Button>
+                <Form
+                  onSubmit={handleSearch}
+                  className="flex flex-row items-center overflow-hidden rounded-md border border-gray-300"
+                >
+                  <Input
+                    type="text"
+                    name="search"
+                    placeholder="Search class"
+                    className="border-0 bg-gray-50 text-sm text-gray-900 focus:border-blue-600 focus:ring-blue-600"
+                  />
+                  <Button
+                    type={"submit"}
+                    className="h-full cursor-pointer bg-blue-600 px-2 text-sm text-white"
+                  >
+                    Search
+                  </Button>
+                </Form>
               </div>
             </div>
 
@@ -79,6 +125,7 @@ const SettingClassAdminPage = () => {
                     <th className="py-3 pl-2">Class</th>
                     <th className="px-6 py-3">School Year</th>
                     <th className="px-6 py-3">Created At</th>
+                    <th className="px-6 py-3">Status</th>
                     <th className="px-6 py-3">Action</th>
                   </tr>
                 </thead>
@@ -94,19 +141,50 @@ const SettingClassAdminPage = () => {
                       </td>
                       <td className="px-6 py-4">{item.year}</td>
                       <td className="px-6 py-4">{item.createdAt}</td>
+                      <td className="px-6 py-4">
+                        <div className="flex items-center gap-2">
+                          <span
+                            className={`inline-block h-2 w-2 rounded-full ${
+                              item.deletedAt === null
+                                ? "bg-green-500"
+                                : "bg-red-500"
+                            }`}
+                          ></span>
+                          {item.deletedAt === null ? "Active" : "Inactive"}
+                        </div>
+                      </td>
                       <td className="flex gap-3 px-6 py-4">
-                        <Button
-                          className="cursor-pointer text-blue-600 hover:text-blue-700"
-                          onClick={() => setEditData(item)}
-                        >
-                          <FaRegEdit size={18} />
-                        </Button>
-                        <Button
-                          className="cursor-pointer text-red-600 hover:text-red-700"
-                          onClick={() => setDeleteData(item)}
-                        >
-                          <FaRegTrashCan size={18} />
-                        </Button>
+                        {item.deletedAt === null ? (
+                          <>
+                            <Button
+                              className="cursor-pointer text-blue-600 hover:text-blue-700"
+                              onClick={() => setEditData(item)}
+                            >
+                              <FaRegEdit size={18} />
+                            </Button>
+                            <Button
+                              className="cursor-pointer text-red-600 hover:text-red-700"
+                              onClick={() => setSoftDeleteData(item)}
+                            >
+                              <FaRegTrashCan size={18} />
+                            </Button>
+                          </>
+                        ) : (
+                          <>
+                            {/* <Button
+                                className="cursor-pointer text-green-600 hover:text-green-700"
+                                onClick={() => setSoftDeleteData(item)}
+                              >
+                                <FaTrashRestore size={18} />
+                              </Button> */}
+                            <Button
+                              className="cursor-pointer text-red-800 hover:text-red-900"
+                              onClick={() => setDeleteData(item)}
+                            >
+                              <FaTrash size={18} />
+                            </Button>
+                          </>
+                        )}
                       </td>
                     </tr>
                   ))}
@@ -171,10 +249,19 @@ const SettingClassAdminPage = () => {
           onRefresh={() => setRefresh((prev) => !prev)}
         />
       )}
+      {softDeleteData && (
+        <SoftDeleteClassModal
+          onRefresh={() => setRefresh((prev) => !prev)}
+          onClose={() => setSoftDeleteData(null)}
+          dispatch={dispatch}
+          data={softDeleteData}
+        />
+      )}
       {deleteData && (
         <DeleteClassModal
           onRefresh={() => setRefresh((prev) => !prev)}
           onClose={() => setDeleteData(null)}
+          dispatch={dispatch}
           data={deleteData}
         />
       )}
