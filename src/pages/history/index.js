@@ -31,7 +31,6 @@ const HistoryPage = () => {
   }, [router]);
 
   const handleShow = () => {
-    console.log("show");
 
     const element = document.getElementById("details");
     element.classList.toggle("hidden");
@@ -80,7 +79,7 @@ const HistoryPage = () => {
           )}
         </div>
       </div>
-      <div id='details' className="absolute bg-gray-300/60 w-full h-full flex flex-col justify-center items-center">
+      <div id='details' className="absolute hidden bg-gray-300/60 w-full h-full flex-col justify-center items-center">
         <Details handleShow={handleShow} data={dataDetails} />
       </div>
     </section>

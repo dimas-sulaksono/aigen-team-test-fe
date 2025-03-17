@@ -5,8 +5,8 @@ import PaymentsPage from "./payments";
 
 export default function Home() {
   return (
-    <Section>
-      <PaymentsPage />
-    </Section>
+    // <Section>
+    <PaymentsPage />
+    // </Section>
   );
 }
