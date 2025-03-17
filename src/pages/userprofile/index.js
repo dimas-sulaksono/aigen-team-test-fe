@@ -2,11 +2,13 @@ import Button from "@/components/atoms/Button";
 import Image from "next/image";
 import React, { useEffect, useState, useCallback } from "react";
 import { getByemail } from "@/services/auth";
+import { getStudentByUsername } from "@/services/student";
 import { jwtDecode } from "jwt-decode";
 import { useRouter } from "next/router";
 
 function UserProfilePage() {
   const [user, setUser] = useState(null);
+  const [student, setStudent] = useState(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 
@@ -34,9 +36,24 @@ function UserProfilePage() {
     }
   }, [router]);
 
+  const fetchStudent = useCallback(async () => {
+    try {
+      const response = await getStudentByUsername(user.name);
+      setStudent(response?.data || null);
+    } catch (error) {
+      console.error("Error fetching student data:", error);
+    }
+  }, [user]);
+
   useEffect(() => {
     fetchUser();
   }, [fetchUser]);
+
+  useEffect(() => {
+    if (user) {
+      fetchStudent();
+    }
+  }, [user, fetchStudent]);
 
   if (loading) {
     return <p className="p-6 text-gray-500">Loading...</p>;
@@ -86,42 +103,37 @@ function UserProfilePage() {
         <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2">
           <div>
             <h3 className="font-medium">Alamat</h3>
-            <p>Pendidikan: {user.educationAddress || "No data available"}</p>
-            <p>Alamat KTP: {user.ktpAddress || "No data available"}</p>
+            <p>Alamat : {student?.address || "No data available"}</p>
           </div>
+
           <div>
-            <h3 className="font-medium">Pengalaman</h3>
-            <p>
-              Pengalaman Kerja: {user.workExperience || "No data available"}
-            </p>
-            <p>
-              Pengalaman Organisasi:{" "}
-              {user.organizationExperience || "No data available"}
-            </p>
+            <h3 className="font-medium">Nomor Induk Siswa</h3>
+            <p>Nis : {student?.nis || "No data available"}</p>
           </div>
+
           <div>
-            <h3 className="font-medium">Keluarga</h3>
-            <p>{user.familyInfo || "No data available"}</p>
+            <h3 className="font-medium">Kelas</h3>
+            <p>{student?.className || "No data available"}</p>
           </div>
+
           <div>
-            <h3 className="font-medium">Media Sosial</h3>
-            <p>{user.socialMedia || "No data available"}</p>
+            <h3 className="font-medium">birthdate</h3>
+            <p>{student?.birthdate || "No data available"}</p>
           </div>
+
           <div>
-            <h3 className="font-medium">Provinsi KTP</h3>
-            <p>{user.ktpProvince || "No data available"}</p>
+            <h3 className="font-medium">startDate</h3>
+            <p>{student?.startDate || "No data available"}</p>
           </div>
+
           <div>
-            <h3 className="font-medium">Kecamatan KTP</h3>
-            <p>{user.ktpDistrict || "No data available"}</p>
+            <h3 className="font-medium">endDate</h3>
+            <p>{student?.endDate || "No data available"}</p>
           </div>
+
           <div>
-            <h3 className="font-medium">Kota / Kab. KTP</h3>
-            <p>{user.ktpCity || "No data available"}</p>
-          </div>
-          <div>
-            <h3 className="font-medium">Kode Pos KTP</h3>
-            <p>{user.ktpPostalCode || "No data available"}</p>
+            <h3 className="font-medium">phoneNumber</h3>
+            <p>{student?.phoneNumber || "No data available"}</p>
           </div>
         </div>
       </div>
