@@ -26,14 +26,13 @@ const ToastNotification = () => {
     type === "error"
       ? "bg-red-100  text-red-500 "
       : type === "warning"
-      ? "bg-yellow-100 text-yellow-500"
-      : "bg-green-100  text-green-500 ";
+        ? "bg-yellow-100 text-yellow-500"
+        : "bg-green-100  text-green-500 ";
 
   return (
     <div
-      className={`fixed bottom-5 right-5 flex items-center w-full max-w-xs p-4 mb-4 text-gray-500 bg-slate-100 rounded-lg shadow-sm border
-        transition-opacity duration-300 ease-in-out ${
-          isVisible ? "opacity-100" : "opacity-0"
+      className={`fixed bottom-5 right-5 flex items-center w-full max-w-lg p-4 mb-4 text-gray-500 bg-slate-100 rounded-lg shadow-sm border
+        transition-opacity duration-300 ease-in-out ${isVisible ? "opacity-100" : "opacity-60"
         }`}
     >
       <div

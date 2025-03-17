@@ -1,13 +1,9 @@
 import { useRouter } from 'next/router';
-import { useEffect } from 'react';
 
 export const Pagination = ({ pageable = {} }) => {
   const router = useRouter();
   const totalPage = pageable.totalPages;
   const pageNumber = pageable.pageable.pageNumber;
-
-  console.log(totalPage);
-  console.log(pageNumber);
 
 
   if (totalPage <= pageNumber) return (null);
