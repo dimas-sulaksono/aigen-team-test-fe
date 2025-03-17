@@ -2,27 +2,34 @@ import Button from "@/components/atoms/Button";
 import Form from "@/components/atoms/Form";
 import Input from "@/components/atoms/Input";
 import Section from "@/components/atoms/Section";
+import { showNotificationWithTimeout } from "@/redux/notificationSlice";
+import { createNewPayment, getUserStudent } from "@/services/payment";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 
 const PaymentsPage = () => {
   const [amount, setAmount] = useState("");
   const router = useRouter();
-  const [loading, setLoading] = useState(true);
+  const [student, setStudent] = useState({});
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) {
-      router.replace("/auth/login");
-    } else {
-      setLoading(false);
+      router.push("/auth/login");
     }
   }, [router]);
 
+  useEffect(() => {
+    getStudentData();
+  }, []);
+
   const paymentOptions = {
-    uas: 1000000,
-    uts: 750000,
-    "study-tour": 1500000,
+    SPP: 1062000,
+    UAS: 1000000,
+    UTS: 750000,
+    Ekstrakurikuler: 1500000,
   };
 
   const handlePaymentChange = (e) => {
@@ -34,18 +41,49 @@ const PaymentsPage = () => {
     e.preventDefault();
 
     const payload = {
-      payment_name: e.target.payment_name.value,
+      paymentName: e.target.payment_name.value,
       amount: e.target.amount.value,
       description: e.target.description.value,
-      payment_type_id: e.target.payment_type_id.value,
+      paymentType: e.target.payment_type_id.value,
     };
 
-    console.log("Payload to be sent:", payload);
+    const res = await createNewPayment(payload);
+    if (res.status) {
+      dispatch(
+        showNotificationWithTimeout({
+          message: "Berhasil",
+          type: "success",
+          duration: 3000,
+        }),
+      );
+    } else {
+      if (res.message.status == 400) {
+        const errMessage = Object.values(res.message.data.data).join(" - ");
+        dispatch(
+          showNotificationWithTimeout({
+            message: errMessage,
+            type: "error",
+            duration: 3000,
+          }),
+        );
+      }
+    }
+
+  };
+
+  // fetch student data
+  const getStudentData = async () => {
+    const res = await getUserStudent();
+    if (res.status) {
+      setStudent(res.data);
+    } else {
+      console.log(res.message);
+    }
   };
 
   return (
-    <Section className="">
-      <div className="rounded-md bg-white p-6 shadow">
+    <Section className="flex justify-center">
+      <div className="rounded-md bg-white p-6 shadow w-full max-w-screen-xl">
         <h1 className="mb-8 text-xl font-medium">Make a payment</h1>
         <Form onSubmit={handlePayNow}>
           <div className="mb-5 flex flex-col gap-4 lg:grid lg:grid-cols-2">
@@ -55,6 +93,7 @@ const PaymentsPage = () => {
                 type="text"
                 name="name"
                 id="name"
+                value={student.name}
                 placeholder={"Enter student name"}
                 className="block w-full rounded-lg border border-gray-300 bg-gray-50 px-3 py-1.5 text-gray-900"
                 readOnly={true}
@@ -66,6 +105,7 @@ const PaymentsPage = () => {
                 type="number"
                 name="nis"
                 id="nis"
+                value={student.nis}
                 placeholder={"Enter NIS"}
                 readOnly={true}
                 className="block w-full rounded-lg border border-gray-300 bg-gray-50 px-3 py-1.5 text-gray-900"
@@ -103,9 +143,10 @@ const PaymentsPage = () => {
                 onChange={handlePaymentChange}
               >
                 <option value="">Select payment for</option>
-                <option value="uas">UAS</option>
-                <option value="uts">UTS</option>
-                <option value="study-tour">Study Tour</option>
+                <option value="SPP">SPP</option>
+                <option value="UAS">UAS</option>
+                <option value="UTS">UTS</option>
+                <option value="Ekstrakurikuler">Ekstrakurikuler</option>
               </select>
             </div>
           </div>

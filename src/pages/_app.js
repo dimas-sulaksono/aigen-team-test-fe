@@ -19,7 +19,6 @@ export default function App({ Component, pageProps }) {
       try {
         const decoded = jwtDecode(token);
         const roles = decoded.role || [];
-        console.log("roles", roles);
 
         if (router.pathname.startsWith("/admin") && !roles.includes("ADMIN")) {
           router.replace("/");
