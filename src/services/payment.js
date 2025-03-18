@@ -9,8 +9,6 @@ export const getUserPaymentHistory = async (payload = {}) => {
     const res = await axios.get(`${api}/payment/me`, { params: payload, ...getAuthHeader() });
     return { status: true, data: res.data };
   } catch (error) {
-    console.log(error);
-
     return { status: false, message: error.response };
   }
 };
@@ -20,8 +18,7 @@ export const getUserStudent = async () => {
     const res = await axios.get(`${api}/payment/student`, getAuthHeader());
     return { status: true, data: res.data };
   } catch (error) {
-    console.log(error);
-    return { status: false, message: error.response };
+    return { status: false, message: error.response || "Network Error" };
   }
 };
 
