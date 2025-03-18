@@ -135,6 +135,11 @@ function UserProfilePage() {
             <h3 className="font-medium">phoneNumber</h3>
             <p>{student?.phoneNumber || "No data available"}</p>
           </div>
+          <div className="mt-2 flex gap-4">
+            <Button className="rounded-md border border-gray-300 bg-white px-4 py-2 hover:bg-gray-200">
+              Edit Data Student
+            </Button>
+          </div>
         </div>
       </div>
     </div>
