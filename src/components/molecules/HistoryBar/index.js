@@ -34,7 +34,6 @@ export default function FilterDropdown() {
 
 
   useEffect(() => {
-    console.log(payload);
     router.push({
       pathname: router.pathname,
       query: payload
