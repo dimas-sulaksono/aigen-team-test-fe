@@ -117,7 +117,7 @@ const AddStudentModal = ({ onClose, classes, dispatch, onRefresh }) => {
                 <option>Select class</option>
                 {classes.map((item) => (
                   <option key={item.id} value={item.id}>
-                    {item.name}
+                    {item.name} ({item.year})
                   </option>
                 ))}
               </select>

@@ -15,11 +15,9 @@ const EditStudentModal = ({ onClose, onRefresh, user, classes, dispatch }) => {
       classId: Number(e.target.classId.value),
       nis: e.target.nis.value,
       birthdate: e.target.birthdate.value,
-      phoneNumber: Number(e.target.phoneNumber.value),
+      phoneNumber: e.target.phoneNumber.value,
       address: e.target.address.value,
     };
-
-    // console.log(payload);
 
     try {
       const res = await updateStudent(user.id, payload);
@@ -56,7 +54,7 @@ const EditStudentModal = ({ onClose, onRefresh, user, classes, dispatch }) => {
     }
   };
 
-  console.log(user.id);
+  // console.log(user.id);
 
   return (
     <div className="bg-opacity-50 fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm">
@@ -115,7 +113,7 @@ const EditStudentModal = ({ onClose, onRefresh, user, classes, dispatch }) => {
                 Class
               </label>
               <select
-                id="classID"
+                id="classId"
                 name="classId"
                 className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500"
                 defaultValue={user.classId}
@@ -123,7 +121,7 @@ const EditStudentModal = ({ onClose, onRefresh, user, classes, dispatch }) => {
                 <option value={user.classId}>{user.className}</option>
                 {classes.map((item) => (
                   <option key={item.id} value={item.id}>
-                    {item.name}
+                    {item.name} ({item.year})
                   </option>
                 ))}
               </select>

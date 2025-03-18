@@ -1,17 +1,19 @@
 import Button from "@/components/atoms/Button";
 import { showNotificationWithTimeout } from "@/redux/notificationSlice";
-import { deleteSchoolYear } from "@/services/schoolYear";
-import { deleteStudent } from "@/services/student";
+import { softDeleteClass } from "@/services/class";
+import { softDeleteStudent } from "@/services/student";
 import React from "react";
 import { MdClose } from "react-icons/md";
-const DeleteStudentModal = ({ data, onClose, dispatch, onRefresh }) => {
+const SoftDeleteStudentModal = ({ data, onClose, dispatch, onRefresh }) => {
   const handleDelete = async () => {
     try {
-      const response = await deleteStudent(data.id);
+      const response = await softDeleteStudent(data.id);
+      console.log(response);
+
       if (response.status) {
         dispatch(
           showNotificationWithTimeout({
-            message: "Student deleted successfully!",
+            message: "Class deleted successfully!",
             type: "success",
             duration: 3000,
           }),
@@ -20,10 +22,10 @@ const DeleteStudentModal = ({ data, onClose, dispatch, onRefresh }) => {
         onClose();
       }
     } catch (error) {
-      console.error("Error deleting Student:", error);
+      console.error("Error deleting Class:", error);
       dispatch(
         showNotificationWithTimeout({
-          message: "Failed to delete Student.",
+          message: "Failed to delete Class.",
           type: "error",
           duration: 3000,
         }),
@@ -79,4 +81,4 @@ const DeleteStudentModal = ({ data, onClose, dispatch, onRefresh }) => {
   );
 };
 
-export default DeleteStudentModal;
+export default SoftDeleteStudentModal;
