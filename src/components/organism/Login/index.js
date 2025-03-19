@@ -1,7 +1,7 @@
 import Button from "@/components/atoms/Button";
 import Input from "@/components/atoms/Input";
 import { FaGraduationCap } from "react-icons/fa6";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Form from "@/components/atoms/Form";
 import { useRouter } from "next/router";
 import { useDispatch } from "react-redux";
@@ -9,7 +9,7 @@ import { login } from "@/services/auth";
 import { showNotificationWithTimeout } from "@/redux/notificationSlice";
 import Link from "next/link";
 import { showNavbar } from "@/redux/navbarReduce";
-
+import { jwtDecode } from "jwt-decode";
 const Login = () => {
   const router = useRouter();
   const dispatch = useDispatch();
@@ -39,19 +39,33 @@ const Login = () => {
           }),
         );
         dispatch(showNavbar());
-        router.push("/payments");
+
+        try {
+          const decoded = jwtDecode(response.data.data);
+          const roles = decoded.role || [];
+          console.log("roles", roles);
+          if (roles.includes("ADMIN")) {
+            router.replace("/admin");
+          } else {
+            router.replace("/payments");
+          }
+        } catch (error) {
+          console.error("Invalid token:", error);
+          router.replace("/auth/login");
+        }
       }
     } catch (error) {
       console.error("Unexpected error:", error);
       dispatch(
         showNotificationWithTimeout({
-          message: data.response.data.message,
+          message: error.response.data.message,
           type: "error",
           duration: 3000,
         }),
       );
     }
   }
+
   return (
     <div className="space-y-4 p-6 sm:p-8 md:space-y-6">
       <div className="flex justify-center text-5xl text-gray-700">
