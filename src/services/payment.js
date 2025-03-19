@@ -73,7 +73,11 @@ export const downloadPDF = async (payload) => {
   }
 };
 
+
+
 export const getAllPayment = async (payload = {}) => {
+  console.log(payload);
+
   try {
     const res = await axios.get(`${api}/payment/all`, {
       params: payload,
