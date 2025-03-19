@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Modal from "react-modal";
-
+import { updateUser } from "@/services/auth";
+import { useRouter } from "next/router";
 Modal.setAppElement("#__next");
 
 const EditProfileModal = ({ isOpen, onRequestClose, user }) => {
@@ -8,8 +9,8 @@ const EditProfileModal = ({ isOpen, onRequestClose, user }) => {
   const [password, setPassword] = useState("");
   const [image, setImage] = useState(null);
   const [preview, setPreview] = useState(user?.image || "");
-  const [student, setStudent] = useState(null);
-
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -18,9 +19,43 @@ const EditProfileModal = ({ isOpen, onRequestClose, user }) => {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log({ email, password, image });
+
+    setLoading(true);
+
+    const formData = new FormData();
+
+    if (email.trim() && email !== user?.email) {
+      formData.append("email", email);
+    }
+
+    if (password.trim()) {
+      formData.append("password", password);
+    }
+
+    if (image) {
+      formData.append("profilePicture", image);
+    }
+
+    try {
+      const result = await updateUser(user.id, formData);
+      console.log(result);
+
+      if (result.status) {
+        alert("Profil berhasil diperbarui!");
+
+        localStorage.removeItem("token");
+
+        router.push("/login");
+      } else {
+        alert("Gagal memperbarui profil: " + result.message);
+      }
+    } catch (error) {
+      alert("Terjadi kesalahan saat memperbarui profil.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
