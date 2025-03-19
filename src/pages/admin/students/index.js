@@ -48,7 +48,7 @@ const StudentsAdminPage = () => {
   const [refresh, setRefresh] = useState(false);
   const [currentPage, setCurrentPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
-  const itemsPerPage = 10;
+  const [itemsPerPage, setItemsPerPage] = useState(10);
 
   const fetchData = useCallback(async () => {
     const { startDate, endDate, name, sort } = router.query;
@@ -57,11 +57,17 @@ const StudentsAdminPage = () => {
 
     let res;
     if (name) {
-      res = await searchStudent(name, 0, 10);
+      res = await searchStudent(name, currentPage, itemsPerPage);
     } else if (startDate && endDate) {
-      res = await filterStudent(startDate, endDate, 0, 10, sort);
+      res = await filterStudent(
+        startDate,
+        endDate,
+        currentPage,
+        itemsPerPage,
+        sort,
+      );
     } else if (sort) {
-      res = await sortStudent(sort, 0, 10);
+      res = await sortStudent(sort, currentPage, itemsPerPage);
     } else {
       res = await getAllStudent(currentPage, itemsPerPage);
     }
@@ -124,8 +130,8 @@ const StudentsAdminPage = () => {
           startDate,
           endDate,
           sort: router.query.sort || "asc",
-          page: 0,
-          size: 10,
+          page: currentPage || 0,
+          size: itemsPerPage,
         },
       },
       undefined,
@@ -138,7 +144,7 @@ const StudentsAdminPage = () => {
     const name = e.target.search.value;
     router.push({
       pathname: "/admin/students",
-      query: { ...router.query, name, page: 0, size: 10 },
+      query: { ...router.query, name, page: 0, size: itemsPerPage },
     });
   };
 
@@ -228,18 +234,49 @@ const StudentsAdminPage = () => {
                             </option>
                           ))}
                         </select>
+                        <label
+                          className="block text-sm font-medium text-gray-700"
+                          htmlFor="itemsPerPage"
+                        >
+                          Items per page
+                        </label>
+                        <select
+                          name="itemsPerPage"
+                          className="mt-1 w-fit rounded-lg border border-gray-300 p-2 text-sm focus:border-blue-500 focus:ring-blue-500"
+                          value={itemsPerPage}
+                          onChange={(e) => {
+                            setItemsPerPage(e.target.value);
+                            router.push(
+                              {
+                                pathname: "/admin/students",
+                                query: {
+                                  ...router.query,
+                                  size: e.target.value,
+                                  page: 0,
+                                },
+                              },
+                              undefined,
+                              { shallow: true },
+                            );
+                          }}
+                        >
+                          <option value="">-item page-</option>
+                          <option value="10">10</option>
+                          <option value="20">20</option>
+                          <option value="50">50</option>
+                        </select>
                       </div>
 
                       <div className="mt-4 flex justify-end gap-2">
                         <Button
                           className="rounded-lg bg-gray-200 px-4 py-2 text-gray-700 hover:bg-gray-300"
                           onClick={() => {
-                            setSelectedSchoolYear("Any"); // Reset state
+                            setSelectedSchoolYear("Any");
                             router.push(
                               { pathname: "/admin/students" },
                               undefined,
                               { shallow: true },
-                            ); // Reset URL
+                            );
                           }}
                         >
                           Reset
