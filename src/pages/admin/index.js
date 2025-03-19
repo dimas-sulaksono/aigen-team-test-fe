@@ -1,58 +1,106 @@
 import AdminLayout from "@/components/templates/AdminLayout";
-import React from "react";
+import { formatCurrency } from "@/helpers/utils/formatCurrency";
+import {
+  getAllPayment,
+  getAmountPending,
+  getAmoutPaid,
+} from "@/services/payment";
+import { getCountStudents } from "@/services/student";
+import React, { useCallback, useEffect, useState } from "react";
 import { FaMoneyBillAlt, FaUserCircle } from "react-icons/fa";
-import { FaBell, FaChartLine, FaUserGraduate } from "react-icons/fa6";
+import { FaUserGraduate } from "react-icons/fa6";
 
 const AdminPage = () => {
+  const [students, setStudents] = useState([]);
+  const [payments, setPayments] = useState([]);
+  const [transactions, setTransactions] = useState([]);
+  const [recent, setRecent] = useState([]);
+
+  const fetchStudents = useCallback(async () => {
+    const res = await getCountStudents();
+
+    if (res.status) {
+      setStudents(res.data);
+    }
+  }, []);
+
+  const fetchPaymentsPaid = useCallback(async () => {
+    const res = await getAmoutPaid();
+    if (res.status) {
+      setPayments(res.data);
+    }
+  }, []);
+
+  const fetchPayments = useCallback(async () => {
+    const res = await getAllPayment(0, 5);
+    console.log(res);
+
+    if (res.status) {
+      const data = res.data.content
+        .slice(0, 5)
+        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+      setRecent(data);
+    }
+  }, []);
+
+  const fetchPaymentPending = useCallback(async () => {
+    const res = await getAmountPending();
+    if (res.status) {
+      setTransactions(res.data);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchStudents();
+    fetchPayments();
+    fetchPaymentsPaid();
+    fetchPaymentPending();
+  }, [fetchStudents, fetchPayments, fetchPaymentPending, fetchPaymentsPaid]);
+
+  console.log("ini payments :", recent);
+
   return (
     <AdminLayout>
       <main className="flex-1 p-8">
-        <div className="grid grid-cols-4 gap-4 mb-8">
-          <div className="bg-white rounded p-4">
-            <h3 className="lg:text-lg text-sm font-semibold mb-2">
+        <div className="mb-8 grid grid-cols-3 gap-3">
+          <div className="rounded bg-white p-4">
+            <h3 className="mb-2 text-sm font-semibold lg:text-lg">
               Total Students
             </h3>
             <div className="flex items-center">
-              <span className="lg:text-3xl text-md font-bold mr-2">2,543</span>
-              <FaUserGraduate className="text-gray-500" />
+              <span className="text-md mr-2 font-bold lg:text-xl">
+                {students}
+              </span>
+              <FaUserGraduate className="text-amber-500 lg:text-xl" />
             </div>
           </div>
-          <div className="bg-white rounded p-4">
-            <h3 className="lg:text-lg text-sm font-semibold mb-2">
+          <div className="rounded bg-white p-4">
+            <h3 className="mb-2 text-sm font-semibold lg:text-lg">
               Total Payments
             </h3>
             <div className="flex items-center">
-              <span className="lg:text-3xl text-md font-bold mr-2">
-                $234,567
+              <span className="text-md mr-2 font-bold lg:text-xl">
+                {formatCurrency(payments, "id-ID", "IDR")}
               </span>
-              <FaMoneyBillAlt className="text-gray-500" />
+              <FaMoneyBillAlt className="text-blue-500 lg:text-xl" />
             </div>
           </div>
-          <div className="bg-white rounded p-4">
-            <h3 className="lg:text-lg text-sm font-semibold mb-2">
+          <div className="rounded bg-white p-4">
+            <h3 className="mb-2 text-sm font-semibold lg:text-lg">
               Pending Payments
             </h3>
             <div className="flex items-center">
-              <span className="lg:text-3xl text-md font-bold mr-2">
-                $12,345
+              <span className="text-md mr-2 font-bold lg:text-xl">
+                {formatCurrency(transactions, "id-ID", "IDR")}
               </span>
-              <FaMoneyBillAlt className="text-gray-500" />
-            </div>
-          </div>
-          <div className="bg-white rounded p-4">
-            <h3 className="lg:text-lg text-sm font-semibold mb-2">
-              Today{"'"}s Collection
-            </h3>
-            <div className="flex items-center">
-              <span className="lg:text-3xl text-md font-bold mr-2">$3,456</span>
-              <FaChartLine className="text-gray-500" />
+              <FaMoneyBillAlt className="text-green-500 lg:text-xl" />
             </div>
           </div>
         </div>
 
         {/* Recent Transactions */}
-        <div className="bg-white rounded p-4">
-          <h2 className="text-xl font-semibold mb-4">Recent Transactions</h2>
+        <div className="rounded bg-white p-4">
+          <h2 className="mb-4 text-xl font-semibold">Recent Transactions</h2>
           <table className="w-full">
             <thead>
               <tr className="text-left">
@@ -64,38 +112,34 @@ const AdminPage = () => {
               </tr>
             </thead>
             <tbody>
-              <tr className="border-t">
-                <td className="py-2">
-                  <div className="flex items-center">
-                    <FaUserCircle className="h-8 w-8 mr-2" />
-                    John Doe
-                  </div>
-                </td>
-                <td className="py-2">#PAY-2025001</td>
-                <td className="py-2">$500</td>
-                <td className="py-2">
-                  <span className="bg-green-200 text-green-800 px-2 py-1 rounded">
-                    Completed
-                  </span>
-                </td>
-                <td className="py-2">Jan 15, 2025</td>
-              </tr>
-              <tr className="border-t">
-                <td className="py-2">
-                  <div className="flex items-center">
-                    <FaUserCircle className="h-8 w-8 mr-2" />
-                    Jane Smith
-                  </div>
-                </td>
-                <td className="py-2">#PAY-2025002</td>
-                <td className="py-2">$750</td>
-                <td className="py-2">
-                  <span className="bg-yellow-200 text-yellow-800 px-2 py-1 rounded">
-                    Pending
-                  </span>
-                </td>
-                <td className="py-2">Jan 14, 2025</td>
-              </tr>
+              {recent.map((item, index) => (
+                <tr key={index} className="border-t">
+                  <td className="py-2">
+                    <div className="flex items-center">
+                      <FaUserCircle className="mr-2 h-8 w-8" />
+                      {item?.name}
+                    </div>
+                  </td>
+                  <td className="py-2">{item?.id}</td>
+                  <td className="py-2">
+                    {formatCurrency(item?.amount, "id-ID", "IDR")}
+                  </td>
+                  <td className="py-2">
+                    <span
+                      className={`rounded px-2 py-1 ${
+                        item?.status?.toLowerCase() === "paid"
+                          ? "w-10 bg-green-200 text-green-800"
+                          : "bg-yellow-200 text-yellow-800"
+                      }`}
+                    >
+                      {item?.status}
+                    </span>
+                  </td>
+                  <td className="py-2">
+                    {new Date(item?.createdAt).toISOString().split("T")[0]}
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>

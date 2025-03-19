@@ -124,3 +124,16 @@ export const sortStudent = async (sort, page = 0, size = 10) => {
     return { status: false, message: error.response };
   }
 };
+
+export const getCountStudents = async () => {
+  try {
+    const res = await axios.get(
+      `${api}/student/get-count-students`,
+      getAuthHeader(),
+    );
+    return { status: true, data: res.data };
+  } catch (error) {
+    console.log(error);
+    return { status: false, message: error.response };
+  }
+};

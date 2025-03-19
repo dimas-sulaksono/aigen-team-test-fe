@@ -1,12 +1,14 @@
-import axios from 'axios';
-import { getAuthHeader } from './auth';
+import axios from "axios";
+import { getAuthHeader } from "./auth";
 
 const api = process.env.NEXT_PUBLIC_API_URL;
 
 export const getUserPaymentHistory = async (payload = {}) => {
-
   try {
-    const res = await axios.get(`${api}/payment/me`, { params: payload, ...getAuthHeader() });
+    const res = await axios.get(`${api}/payment/me`, {
+      params: payload,
+      ...getAuthHeader(),
+    });
     return { status: true, data: res.data };
   } catch (error) {
     return { status: false, message: error.response };
@@ -24,7 +26,11 @@ export const getUserStudent = async () => {
 
 export const createNewPayment = async (payload) => {
   try {
-    const res = await axios.post(`${api}/payment/add`, payload, getAuthHeader());
+    const res = await axios.post(
+      `${api}/payment/add`,
+      payload,
+      getAuthHeader(),
+    );
     return { status: true, data: res.data };
   } catch (error) {
     return { status: false, message: error.response };
@@ -47,7 +53,8 @@ export const downloadPDF = async (payload) => {
       await new Promise((resolve) => setTimeout(resolve, 1000)); // Tunggu 1 detik sebelum cek ulang
     }
 
-    if (!isReady) throw new Error("Data tidak tersedia setelah beberapa percobaan.");
+    if (!isReady)
+      throw new Error("Data tidak tersedia setelah beberapa percobaan.");
 
     const response = await axios.get("/api/generate-pdf", {
       responseType: "blob",
@@ -66,11 +73,36 @@ export const downloadPDF = async (payload) => {
   }
 };
 
-
-
-export const getAllPayment = async () => {
+export const getAllPayment = async (payload = {}) => {
   try {
-    const res = await axios.get(`${api}/payment/student`, getAuthHeader());
+    const res = await axios.get(`${api}/payment/all`, {
+      params: payload,
+      ...getAuthHeader(),
+    });
+    return { status: true, data: res.data };
+  } catch (error) {
+    return { status: false, message: error.response || "Network Error" };
+  }
+};
+
+export const getAmoutPaid = async () => {
+  try {
+    const res = await axios.get(
+      `${api}/payment/get-amount-paid`,
+      getAuthHeader(),
+    );
+    return { status: true, data: res.data };
+  } catch (error) {
+    return { status: false, message: error.response || "Network Error" };
+  }
+};
+
+export const getAmountPending = async () => {
+  try {
+    const res = await axios.get(
+      `${api}/payment/get-amount-pending`,
+      getAuthHeader(),
+    );
     return { status: true, data: res.data };
   } catch (error) {
     return { status: false, message: error.response || "Network Error" };
