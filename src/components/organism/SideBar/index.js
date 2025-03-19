@@ -96,19 +96,6 @@ const SideBarAdmin = ({ children }) => {
             {dropdownOpen && (
               <div className="absolute left-0 mt-2 w-full rounded-lg bg-white shadow-md">
                 <ul className="py-2 text-sm">
-                  {/* <li>
-                    <Link
-                      href={"/admin/settings/class"}
-                      className={`block w-full px-4 py-2 text-left hover:bg-gray-100 ${
-                        isActive("/admin/settings/class")
-                          ? "bg-gray-300"
-                          : "text-gray-600 hover:bg-gray-200"
-                      }`}
-                      onClick={() => dispatch(closeAll())}
-                    >
-                      Class
-                    </Link>
-                  </li> */}
                   <li>
                     <Link
                       href={"/admin/settings/school-year"}
@@ -140,12 +127,8 @@ const SideBarAdmin = ({ children }) => {
             )}
           </div>
           <Link
-            href="/admin/payments"
-            className={`flex items-center rounded p-2 ${
-              isActive("/admin/payments")
-                ? "bg-gray-300"
-                : "text-gray-600 hover:bg-gray-200"
-            }`}
+            href="#"
+            className={`flex items-center rounded p-2 text-gray-600 hover:bg-gray-200`}
           >
             <FaSignOutAlt className="mr-2" />
             <Button
