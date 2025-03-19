@@ -82,3 +82,21 @@ export const getByemail = async (email) => {
     return { status: false, message: error.response };
   }
 };
+
+export const updateUser = async (userId, formData) => {
+  try {
+    const response = await axios.put(`${api}/user/update/${userId}`, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    console.log(response.data);
+
+    return { status: true, data: response.data };
+  } catch (error) {
+    return {
+      status: false,
+      message: error.response?.data || "Terjadi kesalahan",
+    };
+  }
+};
