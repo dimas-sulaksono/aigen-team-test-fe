@@ -40,14 +40,19 @@ const SettingClassAdminPage = () => {
   const fetchYear = useCallback(async () => {
     const res = await getAllSchoolYear(currentPage, itemsPerPage);
     if (res.status) {
-      setYear(res.data?.data?.content);
+      const filteredData = res.data?.data?.content.filter(
+        (item) => !item.deletedAt,
+      );
+      setYear(filteredData);
     }
   }, [currentPage, itemsPerPage]);
+
+  console.log(year);
 
   useEffect(() => {
     fetchYear();
     fetchData();
-  }, [fetchData, fetchYear, refresh]);
+  }, [fetchData, refresh]);
 
   const handleSearch = async (e) => {
     e.preventDefault();
