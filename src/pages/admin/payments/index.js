@@ -1,8 +1,13 @@
-import Section from '@/components/atoms/Section'
-import AdminLayout from '@/components/templates/AdminLayout'
-import React from 'react'
+import Section from '@/components/atoms/Section';
+import AdminLayout from '@/components/templates/AdminLayout';
+import React, { useEffect } from 'react';
 
 const PaymentsAdminPage = () => {
+
+  useEffect(() => {
+
+  }, []);
+
   return (
     <AdminLayout>
       <Section>
@@ -125,7 +130,7 @@ const PaymentsAdminPage = () => {
         </nav>
       </Section>
     </AdminLayout>
-  )
-}
+  );
+};
 
-export default PaymentsAdminPage
+export default PaymentsAdminPage;

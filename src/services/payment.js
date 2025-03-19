@@ -33,9 +33,21 @@ export const createNewPayment = async (payload) => {
 
 export const downloadPDF = async (payload) => {
   try {
-
     const save = await axios.post("/api/payment-data", payload);
-    if (save.status != 200) throw new Error("Gagal saat store data!.");
+    if (save.status !== 200) throw new Error("Gagal saat menyimpan data!");
+
+    // Tunggu hingga data tersedia sebelum lanjut generate PDF
+    let isReady = false;
+    for (let i = 0; i < 5; i++) {
+      const check = await axios.get("/api/payment-data?check=true");
+      if (check.data.ready) {
+        isReady = true;
+        break;
+      }
+      await new Promise((resolve) => setTimeout(resolve, 1000)); // Tunggu 1 detik sebelum cek ulang
+    }
+
+    if (!isReady) throw new Error("Data tidak tersedia setelah beberapa percobaan.");
 
     const response = await axios.get("/api/generate-pdf", {
       responseType: "blob",
@@ -51,5 +63,16 @@ export const downloadPDF = async (payload) => {
     window.URL.revokeObjectURL(url);
   } catch (error) {
     console.error("Gagal mengunduh PDF:", error);
+  }
+};
+
+
+
+export const getAllPayment = async () => {
+  try {
+    const res = await axios.get(`${api}/payment/student`, getAuthHeader());
+    return { status: true, data: res.data };
+  } catch (error) {
+    return { status: false, message: error.response || "Network Error" };
   }
 };
