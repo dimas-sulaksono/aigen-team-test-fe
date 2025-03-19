@@ -20,6 +20,7 @@ const EditStudentModal = ({ isOpen, onRequestClose, student, setStudent }) => {
       phoneNumber: e.target.phoneNumber.value,
       address: e.target.address.value,
     };
+    console.log("ini payload", payload);
 
     try {
       const res = await updateStudent(student.id, payload);
