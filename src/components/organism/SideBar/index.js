@@ -4,7 +4,13 @@ import { closeAll, toggleDropdown } from "@/redux/navbarReduce";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React from "react";
-import { FaCog, FaMoneyBillAlt, FaTachometerAlt } from "react-icons/fa";
+import {
+  FaCog,
+  FaHome,
+  FaMoneyBillAlt,
+  FaSignOutAlt,
+  FaTachometerAlt,
+} from "react-icons/fa";
 import { FaAngleDown, FaUserGraduate } from "react-icons/fa6";
 import { FaGraduationCap } from "react-icons/fa6";
 import { useDispatch, useSelector } from "react-redux";
@@ -51,6 +57,17 @@ const SideBarAdmin = ({ children }) => {
             Students
           </Link>
           <Link
+            href="/admin/settings/class"
+            className={`flex items-center rounded p-2 ${
+              isActive("/admin/settings/class")
+                ? "bg-gray-300"
+                : "text-gray-600 hover:bg-gray-200"
+            }`}
+          >
+            <FaHome className="mr-2" />
+            Class
+          </Link>
+          <Link
             href="/admin/payments"
             className={`flex items-center rounded p-2 ${
               isActive("/admin/payments")
@@ -79,7 +96,7 @@ const SideBarAdmin = ({ children }) => {
             {dropdownOpen && (
               <div className="absolute left-0 mt-2 w-full rounded-lg bg-white shadow-md">
                 <ul className="py-2 text-sm">
-                  <li>
+                  {/* <li>
                     <Link
                       href={"/admin/settings/class"}
                       className={`block w-full px-4 py-2 text-left hover:bg-gray-100 ${
@@ -91,7 +108,7 @@ const SideBarAdmin = ({ children }) => {
                     >
                       Class
                     </Link>
-                  </li>
+                  </li> */}
                   <li>
                     <Link
                       href={"/admin/settings/school-year"}
@@ -118,21 +135,29 @@ const SideBarAdmin = ({ children }) => {
                       Payment Type
                     </Link>
                   </li>
-                  <li>
-                    <Button
-                      className="block w-full px-4 py-2 text-left text-red-600 hover:bg-red-100"
-                      onClick={() => {
-                        signOut();
-                        dispatch(closeAll());
-                      }}
-                    >
-                      Logout
-                    </Button>
-                  </li>
                 </ul>
               </div>
             )}
           </div>
+          <Link
+            href="/admin/payments"
+            className={`flex items-center rounded p-2 ${
+              isActive("/admin/payments")
+                ? "bg-gray-300"
+                : "text-gray-600 hover:bg-gray-200"
+            }`}
+          >
+            <FaSignOutAlt className="mr-2" />
+            <Button
+              className="block w-full text-left text-red-600 hover:bg-red-100"
+              onClick={() => {
+                signOut();
+                dispatch(closeAll());
+              }}
+            >
+              Logout
+            </Button>
+          </Link>
         </nav>
       </aside>
 
