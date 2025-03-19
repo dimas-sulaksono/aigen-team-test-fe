@@ -121,11 +121,8 @@ const SideBarAdmin = ({ children }) => {
             )}
           </div>
           <Link
-            href="/admin/payments"
-            className={`flex items-center rounded p-2 ${isActive("/admin/payments")
-              ? "bg-gray-300"
-              : "text-gray-600 hover:bg-gray-200"
-              }`}
+            href="#"
+            className={`flex items-center rounded p-2 text-gray-600 hover:bg-gray-200`}
           >
             <FaSignOutAlt className="mr-2" />
             <Button
