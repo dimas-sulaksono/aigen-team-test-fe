@@ -23,7 +23,7 @@ export default function App({ Component, pageProps }) {
     const token = localStorage.getItem("token");
     if (token) {
       if (isTokenExpired(token)) {
-        router.replace("/login");
+        router.replace("/auth/login");
       } else {
         try {
           const decoded = jwtDecode(token);
