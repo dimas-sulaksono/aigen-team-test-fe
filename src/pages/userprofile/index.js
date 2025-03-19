@@ -154,7 +154,8 @@ function UserProfilePage() {
       <EditStudentModal
         isOpen={isStudentModalOpen}
         onRequestClose={() => setIsStudentModalOpen(false)}
-        user={student}
+        student={student}
+        setStudent={setStudent}
       />
     </div>
   );
