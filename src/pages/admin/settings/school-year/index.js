@@ -24,7 +24,8 @@ const SettingSchoolYearAdminPage = () => {
   const [deleteData, setDeleteData] = useState(false);
   const [currentPage, setCurrentPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
-  const itemsPerPage = 10;
+  const [totalElements, setTotalElements] = useState(0);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
 
   const dispatch = useDispatch();
 
@@ -32,6 +33,8 @@ const SettingSchoolYearAdminPage = () => {
     const res = await getAllSchoolYear(currentPage, itemsPerPage);
     if (res.status) {
       setData(res.data?.data?.content);
+      setTotalElements(res.data.data.totalElements);
+      setTotalPages(res.data.data.totalPages);
     }
   }, [currentPage, itemsPerPage]);
 
@@ -62,9 +65,15 @@ const SettingSchoolYearAdminPage = () => {
   };
 
   const handlePageChange = (page) => {
-    if (page > 0 && page <= totalPages) {
-      setCurrentPage(page);
-    }
+    setCurrentPage(page);
+    router.push(
+      {
+        pathname: "/admin/settings/school-year",
+        query: { ...router.query, page, size: itemsPerPage },
+      },
+      undefined,
+      { shallow: true },
+    );
   };
 
   return (
@@ -181,28 +190,40 @@ const SettingSchoolYearAdminPage = () => {
             </div>
           </div>
 
-          <nav
-            className="flex-column flex items-center justify-end py-4 md:flex-row"
-            aria-label="Table navigation"
-          >
-            <ul className="inline-flex h-8 -space-x-px text-sm rtl:space-x-reverse">
+          <div className="flex items-center justify-between pt-4">
+            <span className="text-sm font-normal text-gray-500">
+              Showing{" "}
+              <span className="font-semibold text-gray-900">
+                {currentPage * itemsPerPage + 1} -{" "}
+                {Math.min(
+                  (currentPage + 1) * itemsPerPage,
+                  totalPages * itemsPerPage,
+                )}
+              </span>{" "}
+              of{" "}
+              <span className="font-semibold text-gray-900">
+                {totalPages * itemsPerPage}
+              </span>
+            </span>
+
+            <ul className="inline-flex h-8 -space-x-px text-sm">
               <li>
                 <Button
                   onClick={() => handlePageChange(currentPage - 1)}
-                  disabled={currentPage === 1}
-                  className={`ms-0 flex h-8 items-center justify-center rounded-s-lg border border-gray-300 px-3 leading-tight ${currentPage === 1 ? "cursor-not-allowed bg-gray-200 text-gray-400" : "bg-white text-gray-500 hover:bg-gray-100 hover:text-gray-700"}`}
+                  disabled={currentPage === 0}
+                  className="flex h-8 items-center justify-center rounded-s-lg border border-gray-300 bg-white px-3 leading-tight text-gray-500 hover:bg-gray-100 hover:text-gray-700 disabled:opacity-50"
                 >
                   Previous
                 </Button>
               </li>
 
-              {Array.from({ length: totalPages }, (_, i) => (
-                <li key={i}>
+              {Array.from({ length: totalPages }, (_, index) => (
+                <li key={index}>
                   <Button
-                    onClick={() => handlePageChange(i + 1)}
-                    className={`flex h-8 items-center justify-center border px-3 leading-tight ${currentPage === i + 1 ? "bg-blue-50 text-blue-600" : "bg-white text-gray-500 hover:bg-gray-100 hover:text-gray-700"}`}
+                    onClick={() => handlePageChange(index)}
+                    className={`flex h-8 items-center justify-center border px-3 leading-tight ${currentPage === index ? "border-blue-500 text-blue-600" : "border-gray-300 text-gray-500 hover:bg-gray-100 hover:text-gray-700"}`}
                   >
-                    {i + 1}
+                    {index + 1}
                   </Button>
                 </li>
               ))}
@@ -210,14 +231,14 @@ const SettingSchoolYearAdminPage = () => {
               <li>
                 <Button
                   onClick={() => handlePageChange(currentPage + 1)}
-                  disabled={currentPage === totalPages}
-                  className={`flex h-8 items-center justify-center rounded-e-lg border px-3 leading-tight ${currentPage === totalPages ? "cursor-not-allowed bg-gray-200 text-gray-400" : "bg-white text-gray-500 hover:bg-gray-100 hover:text-gray-700"}`}
+                  disabled={currentPage === totalPages - 1}
+                  className="flex h-8 items-center justify-center rounded-e-lg border border-gray-300 bg-white px-3 leading-tight text-gray-500 hover:bg-gray-100 hover:text-gray-700 disabled:opacity-50"
                 >
                   Next
                 </Button>
               </li>
             </ul>
-          </nav>
+          </div>
         </Section>
       </AdminLayout>
       {addData && (

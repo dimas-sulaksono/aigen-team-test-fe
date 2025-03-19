@@ -30,6 +30,7 @@ import DeleteStudentModal from "./DeleteStudentModal";
 import { getAllSchoolYear } from "@/services/schoolYear";
 import { useRouter } from "next/router";
 import SoftDeleteStudentModal from "./softDeleteClassModal";
+import { Pagination } from "@/components/molecules/Pagination";
 
 const StudentsAdminPage = () => {
   const router = useRouter();
@@ -48,6 +49,7 @@ const StudentsAdminPage = () => {
   const [refresh, setRefresh] = useState(false);
   const [currentPage, setCurrentPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
+  const [totalElements, setTotalElements] = useState(0);
   const [itemsPerPage, setItemsPerPage] = useState(10);
 
   const fetchData = useCallback(async () => {
@@ -74,6 +76,8 @@ const StudentsAdminPage = () => {
 
     if (res.status) {
       setData(res.data.content);
+      setTotalPages(res.data.totalPages);
+      setTotalElements(res.data.totalElements);
     }
   }, [router.query, currentPage, itemsPerPage]);
 
@@ -101,13 +105,7 @@ const StudentsAdminPage = () => {
     fetchData();
     fetchClass();
     fetchSchoolYear();
-  }, [fetchData, refresh, router.query]);
-
-  const handlePageChange = (page) => {
-    if (page > 0 && page <= totalPages) {
-      setCurrentPage(page);
-    }
-  };
+  }, [fetchData, refresh, router.query, currentPage]);
 
   const handleFilter = (event) => {
     event.preventDefault();
@@ -153,11 +151,11 @@ const StudentsAdminPage = () => {
 
     let newSort;
     if (!currentSort) {
-      newSort = `asc`; // Pertama kali klik -> ASC
+      newSort = `asc`;
     } else if (currentSort === `asc`) {
-      newSort = `desc`; // Kedua kali klik -> DESC
+      newSort = `desc`;
     } else if (currentSort === `desc`) {
-      newSort = undefined; // Ketiga kali klik -> Hapus sorting (kembali ke default)
+      newSort = undefined;
     }
 
     router.push(
@@ -165,8 +163,9 @@ const StudentsAdminPage = () => {
         pathname: "/admin/students",
         query: {
           ...router.query,
-          sort: newSort, // Update query dengan nilai baru
-          page: 0, // Reset ke halaman pertama
+          sort: newSort,
+          page: currentPage,
+          size: itemsPerPage,
         },
       },
       undefined,
@@ -181,6 +180,18 @@ const StudentsAdminPage = () => {
     return <TbCaretUpDownFilled />;
   };
 
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+    router.push(
+      {
+        pathname: "/admin/students",
+        query: { ...router.query, page, size: itemsPerPage },
+      },
+      undefined,
+      { shallow: true },
+    );
+  };
+
   return (
     <>
       <AdminLayout>
@@ -192,6 +203,31 @@ const StudentsAdminPage = () => {
               </h2>
               <div className="flex flex-row justify-between">
                 <div className="flex gap-2 text-sm">
+                  <select
+                    name="itemsPerPage"
+                    className="mt-1 w-18 rounded-md border border-gray-300 p-2 text-sm focus:border-blue-500 focus:ring-blue-500"
+                    value={itemsPerPage}
+                    onChange={(e) => {
+                      setItemsPerPage(e.target.value);
+                      router.push(
+                        {
+                          pathname: "/admin/students",
+                          query: {
+                            ...router.query,
+                            size: e.target.value,
+                            page: currentPage,
+                          },
+                        },
+                        undefined,
+                        { shallow: true },
+                      );
+                    }}
+                  >
+                    <option value="10">Items</option>
+                    <option value="10">10</option>
+                    <option value="20">20</option>
+                    <option value="50">50</option>
+                  </select>
                   <Button
                     onClick={() => setIsOpen(!isOpen)}
                     className="relative flex items-center gap-1 rounded-md border border-gray-300 bg-transparent px-4 py-2 transition"
@@ -233,37 +269,6 @@ const StudentsAdminPage = () => {
                               {school.endDate})
                             </option>
                           ))}
-                        </select>
-                        <label
-                          className="block text-sm font-medium text-gray-700"
-                          htmlFor="itemsPerPage"
-                        >
-                          Items per page
-                        </label>
-                        <select
-                          name="itemsPerPage"
-                          className="mt-1 w-fit rounded-lg border border-gray-300 p-2 text-sm focus:border-blue-500 focus:ring-blue-500"
-                          value={itemsPerPage}
-                          onChange={(e) => {
-                            setItemsPerPage(e.target.value);
-                            router.push(
-                              {
-                                pathname: "/admin/students",
-                                query: {
-                                  ...router.query,
-                                  size: e.target.value,
-                                  page: 0,
-                                },
-                              },
-                              undefined,
-                              { shallow: true },
-                            );
-                          }}
-                        >
-                          <option value="">-item page-</option>
-                          <option value="10">10</option>
-                          <option value="20">20</option>
-                          <option value="50">50</option>
                         </select>
                       </div>
 
@@ -409,28 +414,40 @@ const StudentsAdminPage = () => {
               </table>
             </div>
           </div>
-          <nav
-            className="flex-column flex items-center justify-end py-4 md:flex-row"
-            aria-label="Table navigation"
-          >
-            <ul className="inline-flex h-8 -space-x-px text-sm rtl:space-x-reverse">
+          <div className="flex items-center justify-between pt-4">
+            <span className="text-sm font-normal text-gray-500">
+              Showing{" "}
+              <span className="font-semibold text-gray-900">
+                {currentPage * itemsPerPage + 1} -{" "}
+                {Math.min(
+                  (currentPage + 1) * itemsPerPage,
+                  totalPages * itemsPerPage,
+                )}
+              </span>{" "}
+              of{" "}
+              <span className="font-semibold text-gray-900">
+                {totalPages * itemsPerPage}
+              </span>
+            </span>
+
+            <ul className="inline-flex h-8 -space-x-px text-sm">
               <li>
                 <Button
                   onClick={() => handlePageChange(currentPage - 1)}
-                  disabled={currentPage === 1}
-                  className={`ms-0 flex h-8 items-center justify-center rounded-s-lg border border-gray-300 px-3 leading-tight ${currentPage === 1 ? "cursor-not-allowed bg-gray-200 text-gray-400" : "bg-white text-gray-500 hover:bg-gray-100 hover:text-gray-700"}`}
+                  disabled={currentPage === 0}
+                  className="flex h-8 items-center justify-center rounded-s-lg border border-gray-300 bg-white px-3 leading-tight text-gray-500 hover:bg-gray-100 hover:text-gray-700 disabled:opacity-50"
                 >
                   Previous
                 </Button>
               </li>
 
-              {Array.from({ length: totalPages }, (_, i) => (
-                <li key={i}>
+              {Array.from({ length: totalPages }, (_, index) => (
+                <li key={index}>
                   <Button
-                    onClick={() => handlePageChange(i + 1)}
-                    className={`flex h-8 items-center justify-center border px-3 leading-tight ${currentPage === i + 1 ? "bg-blue-50 text-blue-600" : "bg-white text-gray-500 hover:bg-gray-100 hover:text-gray-700"}`}
+                    onClick={() => handlePageChange(index)}
+                    className={`flex h-8 items-center justify-center border px-3 leading-tight ${currentPage === index ? "border-blue-500 text-blue-600" : "border-gray-300 text-gray-500 hover:bg-gray-100 hover:text-gray-700"}`}
                   >
-                    {i + 1}
+                    {index + 1}
                   </Button>
                 </li>
               ))}
@@ -438,14 +455,14 @@ const StudentsAdminPage = () => {
               <li>
                 <Button
                   onClick={() => handlePageChange(currentPage + 1)}
-                  disabled={currentPage === totalPages}
-                  className={`flex h-8 items-center justify-center rounded-e-lg border px-3 leading-tight ${currentPage === totalPages ? "cursor-not-allowed bg-gray-200 text-gray-400" : "bg-white text-gray-500 hover:bg-gray-100 hover:text-gray-700"}`}
+                  disabled={currentPage === totalPages - 1}
+                  className="flex h-8 items-center justify-center rounded-e-lg border border-gray-300 bg-white px-3 leading-tight text-gray-500 hover:bg-gray-100 hover:text-gray-700 disabled:opacity-50"
                 >
                   Next
                 </Button>
               </li>
             </ul>
-          </nav>
+          </div>
         </Section>
       </AdminLayout>
       {selectedStudent && (

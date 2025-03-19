@@ -1,12 +1,11 @@
-import { useRouter } from 'next/router';
+import { useRouter } from "next/router";
 
 export const Pagination = ({ pageable = {} }) => {
   const router = useRouter();
   const totalPage = pageable.totalPages;
   const pageNumber = pageable.pageable.pageNumber;
 
-
-  if (totalPage <= pageNumber) return (null);
+  if (totalPage <= pageNumber) return null;
 
   const handleClick = (number) => {
     router.push({
@@ -20,16 +19,20 @@ export const Pagination = ({ pageable = {} }) => {
       <li>
         <div
           href="#"
-          className="flex items-center justify-center text-sm py-2 px-3 leading-tight text-blue-700 bg-white border"
+          className="flex items-center justify-center border bg-white px-3 py-2 text-sm leading-tight text-blue-700"
         >
           {number}
         </div>
       </li>
     ) : (
-      <li onClick={() => { handleClick(number); }}>
+      <li
+        onClick={() => {
+          handleClick(number);
+        }}
+      >
         <div
           href="#"
-          className="flex items-center justify-center text-sm py-2 px-3 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 cursor-pointer"
+          className="flex cursor-pointer items-center justify-center border border-gray-300 bg-white px-3 py-2 text-sm leading-tight text-gray-500 hover:bg-gray-100 hover:text-gray-700"
         >
           {number}
         </div>
@@ -39,27 +42,31 @@ export const Pagination = ({ pageable = {} }) => {
 
   return (
     <nav
-      className="flex flex-col md:flex-row justify-between items-start md:items-center space-y-3 md:space-y-0 p-4"
+      className="flex flex-col items-start justify-between space-y-3 p-4 md:flex-row md:items-center md:space-y-0"
       aria-label="Table navigation"
     >
       <span className="text-sm font-normal text-gray-500 dark:text-gray-400">
         Showing
         <span className="font-semibold text-gray-900 dark:text-white">
-          {` `}{pageable?.number * pageable?.size + 1 || 0} to {pageable?.number * pageable?.size + pageable?.numberOfElements || 0}
-        </span> of <span className="font-semibold text-gray-900 dark:text-white">
+          {` `}
+          {pageable?.number * pageable?.size + 1 || 0} to{" "}
+          {pageable?.number * pageable?.size + pageable?.numberOfElements || 0}
+        </span>{" "}
+        of{" "}
+        <span className="font-semibold text-gray-900 dark:text-white">
           {pageable?.totalElements}
         </span>
       </span>
       <ul className="inline-flex">
-        <li onClick={() => {
-          if (!pageable?.first) handleClick(pageNumber);
-        }}>
-          <div
-            className="flex items-center justify-center h-full py-1.5 px-3 ml-0 text-gray-500 bg-white rounded-l-lg border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white cursor-pointer"
-          >
+        <li
+          onClick={() => {
+            if (!pageable?.first) handleClick(pageNumber);
+          }}
+        >
+          <div className="ml-0 flex h-full cursor-pointer items-center justify-center rounded-l-lg border border-gray-300 bg-white px-3 py-1.5 text-gray-500 hover:bg-gray-100 hover:text-gray-700">
             <span className="sr-only">Previous</span>
             <svg
-              className="w-5 h-5"
+              className="h-5 w-5"
               aria-hidden="true"
               fill="currentColor"
               viewBox="0 0 20 20"
@@ -80,16 +87,18 @@ export const Pagination = ({ pageable = {} }) => {
         {totalPage - pageNumber > 1 && page(pageNumber + 2)}
         {totalPage - pageNumber > 2 && page(pageNumber + 3)}
 
-        <li onClick={() => {
-          if (!pageable?.last) handleClick(pageNumber + 2);
-        }}>
+        <li
+          onClick={() => {
+            if (!pageable?.last) handleClick(pageNumber + 2);
+          }}
+        >
           <a
             href="#"
-            className="flex items-center justify-center h-full py-1.5 px-3 leading-tight text-gray-500 bg-white rounded-r-lg border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+            className="flex h-full cursor-pointer items-center justify-center rounded-r-lg border border-gray-300 bg-white px-3 py-1.5 leading-tight text-gray-500 hover:bg-gray-100 hover:text-gray-700"
           >
             <span className="sr-only">Next</span>
             <svg
-              className="w-5 h-5"
+              className="h-5 w-5"
               aria-hidden="true"
               fill="currentColor"
               viewBox="0 0 20 20"
