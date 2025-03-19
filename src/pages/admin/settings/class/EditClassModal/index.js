@@ -90,7 +90,7 @@ const EditClassModal = ({ onClose, data, dispatch, year, onRefresh }) => {
                 name="schoolYear"
                 className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500"
               >
-                <option value={data?.year}>{data?.year}</option>
+                <option value={data?.yearId}>{data?.year}</option>
                 {year?.map((y) => (
                   <option key={y.id} value={y.id}>
                     {y.schoolYear}
