@@ -35,7 +35,7 @@ const EditProfileModal = ({ isOpen, onRequestClose, user }) => {
     }
 
     if (image) {
-      formData.append("profilePicture", image);
+      formData.append("image", image);
     }
 
     try {
@@ -47,7 +47,7 @@ const EditProfileModal = ({ isOpen, onRequestClose, user }) => {
 
         localStorage.removeItem("token");
 
-        router.push("/login");
+        router.push("/auth/login");
       } else {
         alert("Gagal memperbarui profil: " + result.message);
       }

@@ -1,16 +1,59 @@
 import React, { useState } from "react";
 import Modal from "react-modal";
+import { updateStudent } from "@/services/student";
+import { useDispatch } from "react-redux";
+import { showNotificationWithTimeout } from "@/redux/notificationSlice";
+import Input from "@/components/atoms/Input";
 
 Modal.setAppElement("#__next");
 
-const EditStudentModal = ({ isOpen, onRequestClose, user }) => {
-  const [phone, setPhone] = useState(user?.phone || "");
-  const [address, setAddress] = useState(user?.address || "");
-  const [birthdate, setBirthdate] = useState(user?.birthdate || "");
+const EditStudentModal = ({ isOpen, onRequestClose, student, setStudent }) => {
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e) => {
+  const dispatch = useDispatch();
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log({ phone, address, birthdate });
+
+    const payload = {
+      birthdate: e.target.birthdate.value,
+      phoneNumber: e.target.phoneNumber.value,
+      address: e.target.address.value,
+    };
+
+    try {
+      const res = await updateStudent(student.id, payload);
+      console.log("ini res", res);
+
+      if (res.status) {
+        dispatch(
+          showNotificationWithTimeout({
+            message: "Student updated successfully!",
+            type: "success",
+            duration: 3000,
+          }),
+        );
+        onRequestClose();
+        setStudent(res.data);
+      } else {
+        dispatch(
+          showNotificationWithTimeout({
+            message: res.message?.data?.data,
+            type: "error",
+            duration: 5000,
+          }),
+        );
+      }
+    } catch (error) {
+      console.log(error);
+      dispatch(
+        showNotificationWithTimeout({
+          message: error.message,
+          type: "error",
+          duration: 5000,
+        }),
+      );
+    }
   };
 
   return (
@@ -25,9 +68,9 @@ const EditStudentModal = ({ isOpen, onRequestClose, user }) => {
         <label className="block">
           Phone Number:
           <input
-            type="tel"
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
+            type="number"
+            defaultValue={student?.phoneNumber}
+            name="phoneNumber"
             className="mt-1 w-full rounded-md border p-2"
           />
         </label>
@@ -35,21 +78,26 @@ const EditStudentModal = ({ isOpen, onRequestClose, user }) => {
         <label className="block">
           Address:
           <textarea
-            value={address}
-            onChange={(e) => setAddress(e.target.value)}
+            defaultValue={student?.address}
+            name="address"
             className="mt-1 w-full rounded-md border p-2"
           />
         </label>
 
-        <label className="block">
-          Birthdate:
-          <input
-            type="date"
-            value={birthdate}
-            onChange={(e) => setBirthdate(e.target.value)}
-            className="mt-1 w-full rounded-md border p-2"
-          />
+        <label
+          htmlFor="birthdate"
+          className="mb-2 block text-sm font-medium text-gray-900"
+        >
+          Birthdate
         </label>
+        <Input
+          type="date"
+          name="birthdate"
+          id="birthdate"
+          className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-600 focus:ring-blue-600"
+          required
+          defaultValue={student?.birthdate}
+        />
 
         <div className="flex justify-between">
           <button
@@ -62,8 +110,9 @@ const EditStudentModal = ({ isOpen, onRequestClose, user }) => {
           <button
             type="submit"
             className="rounded-md bg-blue-500 px-4 py-2 text-white"
+            disabled={loading}
           >
-            Save
+            {loading ? "Saving..." : "Save"}
           </button>
         </div>
       </form>
