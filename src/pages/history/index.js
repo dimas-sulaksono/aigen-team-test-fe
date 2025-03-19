@@ -2,7 +2,7 @@ import { Row } from '@/components/atoms/Row';
 import Bar from '@/components/molecules/HistoryBar';
 import { Pagination } from '@/components/molecules/Pagination';
 import { Details } from '@/components/molecules/PaymentDetails';
-import { getUserPaymentHistory } from '@/services/payment';
+import { downloadPDF, getUserPaymentHistory } from '@/services/payment';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 
@@ -38,18 +38,24 @@ const HistoryPage = () => {
     element.classList.toggle("flex");
   };
 
+  const handleDownload = (payload) => {
+    console.log(payload);
+    downloadPDF(payload);
+
+  };
+
   return (
 
-    <section className="bg-gray-50 dark:bg-gray-900 flex-grow flex flex-col relative">
+    <section className="bg-gray-50 flex-grow flex flex-col relative">
       <div className="p-3 sm:p-5 mx-auto max-w-screen-xl px-4 lg:px-12 w-full flex-grow flex flex-col">
-        <div className="bg-white dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden flex-grow flex flex-col">
+        <div className="bg-white relative shadow-md sm:rounded-lg overflow-hidden flex-grow flex flex-col">
           {/* Search & Filter */}
           <Bar />
           {/* Table */}
           <div className="h-full overflow-x-auto flex-grow">
-            <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400 ">
+            <table className="w-full text-sm text-left text-gray-500 ">
               {/* Table Head */}
-              <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+              <thead className="text-xs text-gray-700 uppercase bg-gray-50">
                 <tr>
                   <th scope="col" className="px-10 py-3 w-3/5 truncate">
                     Payment Name
@@ -67,7 +73,7 @@ const HistoryPage = () => {
               <tbody>
                 {data?.map(item => (
 
-                  <Row key={item.id} data={item} handleShow={handleShow} setDataDetails={setDataDetails} />
+                  <Row key={item.id} data={item} handleShow={handleShow} setDataDetails={setDataDetails} handleDownload={handleDownload} />
                 ))}
 
               </tbody>
@@ -79,8 +85,8 @@ const HistoryPage = () => {
           )}
         </div>
       </div>
-      <div id='details' className="absolute hidden bg-gray-300/60 w-full h-full flex-col justify-center items-center">
-        <Details handleShow={handleShow} data={dataDetails} />
+      <div id="details" className="absolute hidden bg-gray-300/60 w-full h-full flex-col justify-center items-center">
+        <Details handleShow={handleShow} data={dataDetails} handleDownload={handleDownload} />
       </div>
     </section>
 

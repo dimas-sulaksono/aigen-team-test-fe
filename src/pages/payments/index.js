@@ -77,100 +77,102 @@ const PaymentsPage = () => {
     if (res.status) {
       setStudent(res.data);
     } else {
-      console.log(res.message);
+      console.error(res.message);
     }
   };
 
   return (
-    <Section className="flex justify-center">
-      <div className="rounded-md bg-white p-6 shadow w-full max-w-screen-xl">
-        <h1 className="mb-8 text-xl font-medium">Make a payment</h1>
-        <Form onSubmit={handlePayNow}>
-          <div className="mb-5 flex flex-col gap-4 lg:grid lg:grid-cols-2">
-            <div className="flex flex-col gap-1.5">
-              <label htmlFor="name">Student Name</label>
+    <Section className="grow">
+      <div className="flex justify-center">
+        <div className="rounded-md bg-white p-6 shadow w-full max-w-screen-xl">
+          <h1 className="mb-8 text-xl font-medium">Make a payment</h1>
+          <Form onSubmit={handlePayNow}>
+            <div className="mb-5 flex flex-col gap-4 lg:grid lg:grid-cols-2">
+              <div className="flex flex-col gap-1.5">
+                <label htmlFor="name">Student Name</label>
+                <Input
+                  type="text"
+                  name="name"
+                  id="name"
+                  value={student.name}
+                  placeholder={"Enter student name"}
+                  className="block w-full rounded-lg border border-gray-300 bg-gray-50 px-3 py-1.5 text-gray-900"
+                  readOnly={true}
+                />
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label htmlFor="name">NIS</label>
+                <Input
+                  type="number"
+                  name="nis"
+                  id="nis"
+                  value={student.nis}
+                  placeholder={"Enter NIS"}
+                  readOnly={true}
+                  className="block w-full rounded-lg border border-gray-300 bg-gray-50 px-3 py-1.5 text-gray-900"
+                />
+              </div>
+            </div>
+            <div className="mb-5 flex flex-col lg:grid lg:grid-cols-1">
+              <label htmlFor="payment_name">Payment name</label>
               <Input
+                className="block w-full rounded-lg border border-gray-300 bg-gray-50 px-3 py-1.5 text-gray-900"
+                name="payment_name"
+                id="payment_name"
                 type="text"
-                name="name"
-                id="name"
-                value={student.name}
-                placeholder={"Enter student name"}
-                className="block w-full rounded-lg border border-gray-300 bg-gray-50 px-3 py-1.5 text-gray-900"
-                readOnly={true}
+                placeholder={"Insert Patment Name"}
               />
             </div>
-            <div className="flex flex-col gap-1.5">
-              <label htmlFor="name">NIS</label>
-              <Input
-                type="number"
-                name="nis"
-                id="nis"
-                value={student.nis}
-                placeholder={"Enter NIS"}
-                readOnly={true}
+            <div className="mb-5 flex flex-col lg:grid lg:grid-cols-1">
+              <label htmlFor="description">Description</label>
+              <textarea
+                rows={4}
                 className="block w-full rounded-lg border border-gray-300 bg-gray-50 px-3 py-1.5 text-gray-900"
-              />
-            </div>
-          </div>
-          <div className="mb-5 flex flex-col lg:grid lg:grid-cols-1">
-            <label htmlFor="payment_name">Payment name</label>
-            <Input
-              className="block w-full rounded-lg border border-gray-300 bg-gray-50 px-3 py-1.5 text-gray-900"
-              name="payment_name"
-              id="payment_name"
-              type="text"
-              placeholder={"Insert Patment Name"}
-            />
-          </div>
-          <div className="mb-5 flex flex-col lg:grid lg:grid-cols-1">
-            <label htmlFor="description">Description</label>
-            <textarea
-              rows={4}
-              className="block w-full rounded-lg border border-gray-300 bg-gray-50 px-3 py-1.5 text-gray-900"
-              name="description"
-              id="description"
-              type="text"
-              placeholder={"Insert Description Payment"}
-            />
-          </div>
-          <div className="mb-5 flex flex-col lg:grid lg:grid-cols-1">
-            <div className="flex flex-col gap-1.5">
-              <label htmlFor="payment_type_id">Payment for</label>
-              <select
-                className="block w-full rounded-lg border border-gray-300 bg-gray-50 px-3 py-1.5 text-gray-900"
-                name="payment_type_id"
-                id="payment_type_id"
-                onChange={handlePaymentChange}
-              >
-                <option value="">Select payment for</option>
-                <option value="SPP">SPP</option>
-                <option value="UAS">UAS</option>
-                <option value="UTS">UTS</option>
-                <option value="Ekstrakurikuler">Ekstrakurikuler</option>
-              </select>
-            </div>
-          </div>
-          <div className="mb-5 flex flex-col lg:grid lg:grid-cols-1">
-            <div className="flex flex-col gap-1.5">
-              <label htmlFor="amount">Amount</label>
-              <Input
-                className="block w-full rounded-lg border border-gray-300 bg-gray-50 px-3 py-1.5 text-gray-900"
-                name="amount"
-                id="amount"
+                name="description"
+                id="description"
                 type="text"
-                value={amount}
-                disabled
-                placeholder={"Enter amount"}
+                placeholder={"Insert Description Payment"}
               />
             </div>
-          </div>
-          <Button
-            type="submit"
-            className="w-full cursor-pointer rounded-lg bg-slate-800 py-2 text-white hover:bg-slate-900"
-          >
-            Pay Now
-          </Button>
-        </Form>
+            <div className="mb-5 flex flex-col lg:grid lg:grid-cols-1">
+              <div className="flex flex-col gap-1.5">
+                <label htmlFor="payment_type_id">Payment for</label>
+                <select
+                  className="block w-full rounded-lg border border-gray-300 bg-gray-50 px-3 py-1.5 text-gray-900"
+                  name="payment_type_id"
+                  id="payment_type_id"
+                  onChange={handlePaymentChange}
+                >
+                  <option value="">Select payment for</option>
+                  <option value="SPP">SPP</option>
+                  <option value="UAS">UAS</option>
+                  <option value="UTS">UTS</option>
+                  <option value="Ekstrakurikuler">Ekstrakurikuler</option>
+                </select>
+              </div>
+            </div>
+            <div className="mb-5 flex flex-col lg:grid lg:grid-cols-1">
+              <div className="flex flex-col gap-1.5">
+                <label htmlFor="amount">Amount</label>
+                <Input
+                  className="block w-full rounded-lg border border-gray-300 bg-gray-50 px-3 py-1.5 text-gray-900"
+                  name="amount"
+                  id="amount"
+                  type="text"
+                  value={amount}
+                  disabled
+                  placeholder={"Enter amount"}
+                />
+              </div>
+            </div>
+            <Button
+              type="submit"
+              className="w-full cursor-pointer rounded-lg bg-slate-800 py-2 text-white hover:bg-slate-900"
+            >
+              Pay Now
+            </Button>
+          </Form>
+        </div>
       </div>
     </Section>
   );

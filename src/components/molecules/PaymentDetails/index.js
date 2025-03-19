@@ -2,7 +2,7 @@ import Button from '@/components/atoms/Button';
 import { formatCurrency } from '@/helpers/utils/formatCurrency';
 import React from 'react';
 
-export const Details = ({ handleShow = () => { }, data = {} }) => {
+export const Details = ({ handleShow = () => { }, data = {}, handleDownload }) => {
 
 
   const getStatusColor = (status) => {
@@ -22,8 +22,6 @@ export const Details = ({ handleShow = () => { }, data = {} }) => {
     return status?.charAt(0).toUpperCase() + status?.slice(1);
   };
 
-  console.log(data);
-
   return (
     <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-2xl mx-auto">
       <h2 className="text-2xl font-semibold mb-6">Payment details #{data.id}</h2>
@@ -40,7 +38,7 @@ export const Details = ({ handleShow = () => { }, data = {} }) => {
           </div>
         </div>
         <div className="flex justify-center items-end">
-          <button onClick={() => console.log("download!")} className={`${data?.status?.toLowerCase() == 'paid' ? "bg-blue-500 hover:bg-blue-600 cursor-pointer" : "bg-gray-500 pointer-events-none"} py-2 px-4 text-white font-semibold rounded flex items-center `}>
+          <button onClick={() => { handleDownload(data); }} className={`${data?.status?.toLowerCase() == 'paid' ? "bg-blue-500 hover:bg-blue-600 cursor-pointer" : "bg-gray-500 pointer-events-none"} py-2 px-4 text-white font-semibold rounded flex items-center `}>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className="h-5 w-5 mr-2"
