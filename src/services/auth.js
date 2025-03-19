@@ -92,7 +92,7 @@ export const updateUser = async (userId, formData) => {
     });
     console.log(response.data);
 
-    return { status: true, data: response.data };
+    return { status: true, data: response.data?.data };
   } catch (error) {
     return {
       status: false,

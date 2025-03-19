@@ -2,6 +2,7 @@
 const nextConfig = {
   reactStrictMode: false,
   images: {
+    domains: ["localhost", "yourapi.com", "cdn.yourapi.com"],
     remotePatterns: [
       {
         protocol: "https",

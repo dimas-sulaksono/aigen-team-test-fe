@@ -37,6 +37,8 @@ export const updateStudent = async (id, payload) => {
       payload,
       getAuthHeader(),
     );
+    console.log(res.data);
+
     return { status: true, data: res.data };
   } catch (error) {
     console.log(error);
