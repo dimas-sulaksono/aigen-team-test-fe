@@ -26,20 +26,22 @@ const Navbar = () => {
           </Link>
 
           <ul className="hidden md:flex md:space-x-6">
-            {["/payments", "/history", "/support"].map((path, index) => (
-              <li key={index}>
-                <Link
-                  href={path}
-                  className={`text-sm font-medium hover:border-b-2 ${
-                    isActive(path)
-                      ? "border-b-2 border-black font-bold text-black"
-                      : "text-gray-600 hover:text-gray-800"
-                  }`}
-                >
-                  {path.replace("/", "").toUpperCase()}
-                </Link>
-              </li>
-            ))}
+            {["/home", "/payments", "/history", "/support"].map(
+              (path, index) => (
+                <li key={index}>
+                  <Link
+                    href={path}
+                    className={`text-sm font-medium hover:border-b-2 ${
+                      isActive(path)
+                        ? "border-b-2 border-black font-bold text-black"
+                        : "text-gray-600 hover:text-gray-800"
+                    }`}
+                  >
+                    {path.replace("/", "").toUpperCase()}
+                  </Link>
+                </li>
+              ),
+            )}
           </ul>
         </div>
 
