@@ -87,28 +87,8 @@ export default function FilterDropdown() {
           </div>
         </form>
       </div>
-      <div className="flex w-full flex-shrink-0 flex-col items-stretch justify-end space-y-2 md:w-auto md:flex-row md:items-center md:space-y-0 md:space-x-3">
-        {/* {currentPath === "/payments" && (
-          <button
-            type="button"
-            className="focus:ring-primary-300 flex items-center justify-center rounded-lg bg-blue-500 px-4 py-2 text-sm font-medium text-white hover:bg-blue-800 focus:ring-4"
-          >
-            <svg
-              className="mr-2 h-3.5 w-3.5"
-              fill="currentColor"
-              viewBox="0 0 20 20"
-              xmlns="http://www.w3.org/2000/svg"
-              aria-hidden="true"
-            >
-              <path
-                clipRule="evenodd"
-                fillRule="evenodd"
-                d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z"
-              />
-            </svg>
-            New payment
-          </button>
-        )} */}
+      <div className="w-full md:w-auto flex flex-col md:flex-row space-y-2 md:space-y-0 items-stretch md:items-center justify-end md:space-x-3 flex-shrink-0">
+
         {/* Filter */}
         <select
           onChange={(e) => handleChange({ type: e.target.value })}

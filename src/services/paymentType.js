@@ -6,8 +6,7 @@ const api = process.env.NEXT_PUBLIC_API_URL;
 export const getAllPaymentType = async (page = 0, size = 10) => {
   try {
     const res = await axios.get(
-      `${api}/payment-type?page=${page}&size=${size}`,
-      getAuthHeader(),
+      `${api}/payment-type?page=${page}&size=${size}`
     );
     return { status: true, data: res.data };
   } catch (error) {
