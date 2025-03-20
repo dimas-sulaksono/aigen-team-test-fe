@@ -42,12 +42,12 @@ export const getAuthHeader = () => {
   };
 };
 
-export const getAllUsers = async (page = 0, size = 10) => {
+export const getAllUsers = async (payload) => {
   try {
     const response = await axios.get(`${api}/user/all`, {
-      params: { page, size },
+      params: payload,
     });
-    console.log(response.data);
+    return { status: true, data: response.data?.data };
   } catch (error) {
     console.error("Error fetching users:", error);
   }
@@ -98,5 +98,26 @@ export const updateUser = async (userId, formData) => {
       status: false,
       message: error.response?.data || "Terjadi kesalahan",
     };
+  }
+};
+
+export const deleteUser = async (userId) => {
+  try {
+    const response = await axios.delete(`${api}/user/delete/${userId}`);
+    return { status: true, data: response.data };
+  } catch (error) {
+    return { status: false, message: error.response };
+  }
+};
+
+export const filterUser = async (role, page = 0, size = 10) => {
+  try {
+    const res = await axios.get(
+      `${api}/user/filter?role=${role}&page=${page}&size=${size}`,
+      getAuthHeader(),
+    );
+    return { status: true, data: res.data };
+  } catch (error) {
+    return { status: false, message: error.response };
   }
 };
