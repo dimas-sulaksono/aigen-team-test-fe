@@ -10,6 +10,7 @@ import {
   FaMoneyBillAlt,
   FaSignOutAlt,
   FaTachometerAlt,
+  FaRegUser,
 } from "react-icons/fa";
 import { FaAngleDown, FaUserGraduate } from "react-icons/fa6";
 import { FaGraduationCap } from "react-icons/fa6";
@@ -66,6 +67,17 @@ const SideBarAdmin = ({ children }) => {
           >
             <FaHome className="mr-2" />
             Class
+          </Link>
+          <Link
+            href="/admin/user"
+            className={`flex items-center rounded p-2 ${
+              isActive("/admin/user")
+                ? "bg-gray-300"
+                : "text-gray-600 hover:bg-gray-200"
+            }`}
+          >
+            <FaRegUser className="mr-2" />
+            User
           </Link>
           <Link
             href="/admin/payments"
