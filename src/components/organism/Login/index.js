@@ -47,12 +47,20 @@ const Login = () => {
           if (roles.includes("ADMIN")) {
             router.replace("/admin");
           } else {
-            router.replace("/home");
+            router.replace("/");
           }
         } catch (error) {
           console.error("Invalid token:", error);
           router.replace("/auth/login");
         }
+      } else {
+        dispatch(
+          showNotificationWithTimeout({
+            message: response.data.data,
+            type: "error",
+            duration: 3000,
+          }),
+        );
       }
     } catch (error) {
       console.error("Unexpected error:", error);

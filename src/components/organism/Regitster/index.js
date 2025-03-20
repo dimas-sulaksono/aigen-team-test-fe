@@ -26,6 +26,8 @@ const Register = () => {
 
     try {
       const response = await register(payload);
+      // console.log(response);
+
       if (response.status) {
         dispatch(
           showNotificationWithTimeout({
@@ -35,6 +37,14 @@ const Register = () => {
           }),
         );
         router.push("/auth/login");
+      } else {
+        dispatch(
+          showNotificationWithTimeout({
+            message: response.data.data,
+            type: "error",
+            duration: 3000,
+          }),
+        );
       }
     } catch (error) {
       console.error("Unexpected error:", error);
