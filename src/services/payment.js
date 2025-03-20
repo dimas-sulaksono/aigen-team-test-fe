@@ -42,7 +42,6 @@ export const downloadPDF = async (payload) => {
     const save = await axios.post("/api/payment-data", payload);
     if (save.status !== 200) throw new Error("Gagal saat menyimpan data!");
 
-    // Tunggu hingga data tersedia sebelum lanjut generate PDF
     let isReady = false;
     for (let i = 0; i < 5; i++) {
       const check = await axios.get("/api/payment-data?check=true");
@@ -50,7 +49,7 @@ export const downloadPDF = async (payload) => {
         isReady = true;
         break;
       }
-      await new Promise((resolve) => setTimeout(resolve, 1000)); // Tunggu 1 detik sebelum cek ulang
+      await new Promise((resolve) => setTimeout(resolve, 1000));
     }
 
     if (!isReady)
@@ -73,13 +72,53 @@ export const downloadPDF = async (payload) => {
   }
 };
 
+export const downloadExcel = async (payload) => {
+  try {
+    const response = await axios.get(`${api}/payment/export`, {
+
+      params: payload,
+      responseType: "blob", // Mengatur respons sebagai blob untuk file
+      ...getAuthHeader()
+    });
+
+    // Membuat URL blob
+    const url = window.URL.createObjectURL(new Blob([response.data]));
+
+    // Membuat elemen <a> untuk mengunduh file
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", "payment_export.xlsx"); // Nama file
+    document.body.appendChild(link);
+    link.click();
+
+    // Membersihkan elemen dan URL blob
+    document.body.removeChild(link);
+    window.URL.revokeObjectURL(url);
+  } catch (error) {
+    console.error("Error downloading file:", error);
+  }
+};
 
 
-export const getAllPayment = async (payload = {}) => {
+
+
+export const getAllPayment = async (payload) => {
   console.log(payload);
 
   try {
     const res = await axios.get(`${api}/payment/all`, {
+      params: payload,
+      ...getAuthHeader(),
+    });
+    return { status: true, data: res.data };
+  } catch (error) {
+    return { status: false, message: error.response || "Network Error" };
+  }
+};
+
+export const getFilterPayment = async (payload) => {
+  try {
+    const res = await axios.get(`${api}/payment/filter`, {
       params: payload,
       ...getAuthHeader(),
     });
@@ -107,6 +146,15 @@ export const getAmountPending = async () => {
       `${api}/payment/get-amount-pending`,
       getAuthHeader(),
     );
+    return { status: true, data: res.data };
+  } catch (error) {
+    return { status: false, message: error.response || "Network Error" };
+  }
+};
+
+export const updatePaymentStatus = async (id, status) => {
+  try {
+    const res = await axios.put(`${api}/payment/${id}?status=${status}`, {}, getAuthHeader());
     return { status: true, data: res.data };
   } catch (error) {
     return { status: false, message: error.response || "Network Error" };
