@@ -112,13 +112,18 @@ const PaymentsAdminPage = ({ paymentType }) => {
     <AdminLayout>
       <section className='h-full px-10 py-4 relative'>
         <div className="relative h-full overflow-x-auto shadow-md sm:rounded-lg flex flex-col border-red-500 p-4 bg-white">
-          <div className='flex gap-5'>
-            <p>Payment List</p>
-            <select onChange={handleOnChangeType} id="type" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-52 p-2.5 ">
-              <option value={""}>ALL</option>
+          <div className="flex items-center gap-4">
+            <span className="text-lg font-semibold">Payment List</span>
+            <select
+              onChange={handleOnChangeType}
+              id="type"
+              className="border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring focus:ring-blue-200 text-sm"
+            >
+              <option value="">Semua</option>
               {paymentType?.map((item) => (
-
-                <option key={item.id} value={item.paymentTypeName} selected={router.query.type == item.paymentTypeName}>{item.paymentTypeName}</option>
+                <option key={item.id} value={item.paymentTypeName}>
+                  {item.paymentTypeName}
+                </option>
               ))}
             </select>
           </div>

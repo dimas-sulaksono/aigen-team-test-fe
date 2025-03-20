@@ -1,7 +1,8 @@
+import { downloadExcel } from '@/services/payment';
 import { getAllSchoolYear } from '@/services/schoolYear';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
-import { FaFilter } from 'react-icons/fa6';
+import { FaFileExcel, FaFilter } from 'react-icons/fa6';
 
 export const PaymentBar = () => {
   const [showFilter, setShowFilter] = useState(false);
@@ -14,6 +15,7 @@ export const PaymentBar = () => {
 
     const payload = {
       ...(router.query.type && { type: router.query.type }),
+      ...(router.query.name && { name: router.query.name }),
       ...(e.target.user.value && { username: e.target.user.value }),
       ...(e.target.student.value && { student: e.target.student.value }),
       ...(e.target.status.value && { status: e.target.status.value }),
@@ -28,6 +30,42 @@ export const PaymentBar = () => {
     });
   };
 
+  const handleSubmitSearch = (e) => {
+    e.preventDefault();
+    const search = e.target.search.value.trim().toLowerCase();
+    const { name, ...payload } = router.query;
+    const currentName = name ? name.toLowerCase() : "";
+    if (!search && !currentName) return;
+
+    if (!search && currentName) {
+      router.push({
+        pathname: router.pathname,
+        query: { ...payload }
+      });
+      return;
+    }
+
+    if (search === currentName) return;
+
+    router.push({
+      pathname: router.pathname,
+      query: {
+        ...router.query,
+        name: search
+      }
+    });
+  };
+
+  const handleExport = async () => {
+    const payload = router.query;
+
+    try {
+      await downloadExcel(payload);
+    } catch (error) {
+      console.log(error);
+
+    }
+  };
 
   useEffect(() => {
     getAllSchoolYear()
@@ -39,9 +77,9 @@ export const PaymentBar = () => {
   return (
     <div className='flex justify-start py-4'>
       <div className='grow flex gap-4'>
-        <form className="flex items-center" onSubmit={(e) => { handleSubmit(e); }}>
+        <form className="flex items-center" onSubmit={handleSubmitSearch}>
           <label htmlFor="simple-search" className="sr-only">
-            Search Student
+            Search Payment Name
           </label>
           <div className="relative">
             <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
@@ -63,7 +101,7 @@ export const PaymentBar = () => {
               type="text"
               id="search"
               className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full pl-10 p-2 "
-              placeholder="Search Student"
+              placeholder="Search Payment Name"
             />
           </div>
         </form>
@@ -133,9 +171,12 @@ export const PaymentBar = () => {
       <div>
 
       </div>
-      {/* <div>
-        <button type="button" class="py-2.5 px-5 me-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100">Export</button>
-      </div> */}
+      <div>
+        <button onClick={handleExport} className="flex items-center py-2 px-4 me-2 mb-2 text-sm font-medium text-gray-900 bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:outline-none focus:ring-4 focus:ring-gray-100">
+          <FaFileExcel className="mr-2" />
+          <span>Export</span>
+        </button>
+      </div>
     </div>
   );
 };
