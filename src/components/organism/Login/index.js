@@ -47,7 +47,7 @@ const Login = () => {
           if (roles.includes("ADMIN")) {
             router.replace("/admin");
           } else {
-            router.replace("/payments");
+            router.replace("/home");
           }
         } catch (error) {
           console.error("Invalid token:", error);
