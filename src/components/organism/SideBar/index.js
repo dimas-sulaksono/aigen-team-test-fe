@@ -36,40 +36,44 @@ const SideBarAdmin = ({ children }) => {
         <nav className="flex flex-col space-y-2">
           <Link
             href="/admin"
-            className={`flex items-center rounded p-2 ${isActive("/admin")
-              ? "bg-gray-300"
-              : "text-gray-600 hover:bg-gray-200"
-              }`}
+            className={`flex items-center rounded p-2 ${
+              isActive("/admin")
+                ? "bg-gray-300"
+                : "text-gray-600 hover:bg-gray-200"
+            }`}
           >
             <FaTachometerAlt className="mr-2" />
             Dashboard
           </Link>
           <Link
             href="/admin/students"
-            className={`flex items-center rounded p-2 ${isActive("/admin/students")
-              ? "bg-gray-300"
-              : "text-gray-600 hover:bg-gray-200"
-              }`}
+            className={`flex items-center rounded p-2 ${
+              isActive("/admin/students")
+                ? "bg-gray-300"
+                : "text-gray-600 hover:bg-gray-200"
+            }`}
           >
             <FaUserGraduate className="mr-2" />
             Students
           </Link>
           <Link
             href="/admin/settings/class"
-            className={`flex items-center rounded p-2 ${isActive("/admin/settings/class")
-              ? "bg-gray-300"
-              : "text-gray-600 hover:bg-gray-200"
-              }`}
+            className={`flex items-center rounded p-2 ${
+              isActive("/admin/settings/class")
+                ? "bg-gray-300"
+                : "text-gray-600 hover:bg-gray-200"
+            }`}
           >
             <FaHome className="mr-2" />
             Class
           </Link>
           <Link
             href="/admin/payments"
-            className={`flex items-center rounded p-2 ${isActive("/admin/payments")
-              ? "bg-gray-300"
-              : "text-gray-600 hover:bg-gray-200"
-              }`}
+            className={`flex items-center rounded p-2 ${
+              isActive("/admin/payments")
+                ? "bg-gray-300"
+                : "text-gray-600 hover:bg-gray-200"
+            }`}
           >
             <FaMoneyBillAlt className="mr-2" />
             Payments
@@ -95,10 +99,11 @@ const SideBarAdmin = ({ children }) => {
                   <li>
                     <Link
                       href={"/admin/settings/school-year"}
-                      className={`block w-full px-4 py-2 text-left hover:bg-gray-100 ${isActive("/admin/settings/school-year")
-                        ? "bg-gray-300"
-                        : "text-gray-600 hover:bg-gray-200"
-                        }`}
+                      className={`block w-full px-4 py-2 text-left hover:bg-gray-100 ${
+                        isActive("/admin/settings/school-year")
+                          ? "bg-gray-300"
+                          : "text-gray-600 hover:bg-gray-200"
+                      }`}
                       onClick={() => dispatch(closeAll())}
                     >
                       School Year
@@ -107,10 +112,11 @@ const SideBarAdmin = ({ children }) => {
                   <li>
                     <Link
                       href={"/admin/settings/payment-type"}
-                      className={`block w-full px-4 py-2 text-left hover:bg-gray-100 ${isActive("/admin/settings/payment-type")
-                        ? "bg-gray-300"
-                        : "text-gray-600 hover:bg-gray-200"
-                        }`}
+                      className={`block w-full px-4 py-2 text-left hover:bg-gray-100 ${
+                        isActive("/admin/settings/payment-type")
+                          ? "bg-gray-300"
+                          : "text-gray-600 hover:bg-gray-200"
+                      }`}
                       onClick={() => dispatch(closeAll())}
                     >
                       Payment Type
@@ -120,8 +126,7 @@ const SideBarAdmin = ({ children }) => {
               </div>
             )}
           </div>
-          <Link
-            href="#"
+          <div
             className={`flex items-center rounded p-2 text-gray-600 hover:bg-gray-200`}
           >
             <FaSignOutAlt className="mr-2" />
@@ -134,7 +139,7 @@ const SideBarAdmin = ({ children }) => {
             >
               Logout
             </Button>
-          </Link>
+          </div>
         </nav>
       </aside>
 

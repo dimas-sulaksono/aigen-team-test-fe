@@ -1,14 +1,19 @@
-import { useRouter } from "next/compat/router";
-import { useState } from "react";
+import { useRouter } from "next/router";
+import { useState, useEffect } from "react";
 
 const useSignOut = () => {
   const [isSignedOut, setIsSignedOut] = useState(false);
-
   const router = useRouter();
+
+  useEffect(() => {
+    if (isSignedOut) {
+      router.push("/auth/login");
+    }
+  }, [isSignedOut, router]);
+
   const signOut = async () => {
     try {
       localStorage.removeItem("token");
-      router.push("/auth/login");
       setIsSignedOut(true);
     } catch (error) {
       console.error(error);
