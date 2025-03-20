@@ -56,6 +56,16 @@ export const PaymentBar = () => {
     });
   };
 
+  const handleChangeSize = (e) => {
+    router.push({
+      pathname: router.pathname,
+      query: {
+        ...router.query,
+        size: e.target.value
+      }
+    });
+  };
+
   const handleExport = async () => {
     const payload = router.query;
 
@@ -77,7 +87,19 @@ export const PaymentBar = () => {
   return (
     <div className='flex justify-start py-4'>
       <div className='grow flex gap-4'>
-        <form className="flex items-center" onSubmit={handleSubmitSearch}>
+        <div className='flex items-center py-2'>
+          <div className='flex items-center '>
+            <select
+              onChange={handleChangeSize}
+              className="py-2 gap-4 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg cursor-pointer"
+            >
+              <option value="10">10</option>
+              <option value="30">30</option>
+              <option value="50">50</option>
+            </select>
+          </div>
+        </div>
+        <form className="flex items-center w-80" onSubmit={handleSubmitSearch}>
           <label htmlFor="simple-search" className="sr-only">
             Search Payment Name
           </label>
@@ -168,9 +190,7 @@ export const PaymentBar = () => {
 
 
       </div>
-      <div>
 
-      </div>
       <div>
         <button onClick={handleExport} className="flex items-center py-2 px-4 me-2 mb-2 text-sm font-medium text-gray-900 bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:outline-none focus:ring-4 focus:ring-gray-100">
           <FaFileExcel className="mr-2" />

@@ -151,3 +151,12 @@ export const getAmountPending = async () => {
     return { status: false, message: error.response || "Network Error" };
   }
 };
+
+export const updatePaymentStatus = async (id, status) => {
+  try {
+    const res = await axios.put(`${api}/payment/${id}?status=${status}`, {}, getAuthHeader());
+    return { status: true, data: res.data };
+  } catch (error) {
+    return { status: false, message: error.response || "Network Error" };
+  }
+};
