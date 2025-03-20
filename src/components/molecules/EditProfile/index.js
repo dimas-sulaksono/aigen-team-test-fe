@@ -2,6 +2,9 @@ import React, { useState } from "react";
 import Modal from "react-modal";
 import { updateUser } from "@/services/auth";
 import { useRouter } from "next/router";
+import { showNotificationWithTimeout } from "@/redux/notificationSlice";
+import { useDispatch } from "react-redux";
+
 Modal.setAppElement("#__next");
 
 const EditProfileModal = ({ isOpen, onRequestClose, user }) => {
@@ -11,6 +14,8 @@ const EditProfileModal = ({ isOpen, onRequestClose, user }) => {
   const [preview, setPreview] = useState(user?.image || "");
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const dispatch = useDispatch();
+
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -21,17 +26,19 @@ const EditProfileModal = ({ isOpen, onRequestClose, user }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     setLoading(true);
 
     const formData = new FormData();
+    let shouldLogout = false;
 
     if (email.trim() && email !== user?.email) {
       formData.append("email", email);
+      shouldLogout = true;
     }
 
     if (password.trim()) {
       formData.append("password", password);
+      shouldLogout = true;
     }
 
     if (image) {
@@ -40,19 +47,42 @@ const EditProfileModal = ({ isOpen, onRequestClose, user }) => {
 
     try {
       const result = await updateUser(user.id, formData);
-      console.log(result);
 
       if (result.status) {
-        alert("Profil berhasil diperbarui!");
+        dispatch(
+          showNotificationWithTimeout({
+            message: "Profile updated successfully!",
+            type: "success",
+            duration: 3000,
+          }),
+        );
 
-        localStorage.removeItem("token");
+        onRequestClose();
 
-        router.push("/auth/login");
+        if (shouldLogout) {
+          localStorage.removeItem("token");
+          router.push("/auth/login");
+        } else {
+          router.reload();
+        }
       } else {
-        alert("Gagal memperbarui profil: " + result.message);
+        dispatch(
+          showNotificationWithTimeout({
+            message: result.message?.data?.data || "Failed to update profile",
+            type: "error",
+            duration: 5000,
+          }),
+        );
       }
     } catch (error) {
-      alert("Terjadi kesalahan saat memperbarui profil.");
+      console.error(error);
+      dispatch(
+        showNotificationWithTimeout({
+          message: error.message || "An error occurred",
+          type: "error",
+          duration: 5000,
+        }),
+      );
     } finally {
       setLoading(false);
     }
@@ -104,14 +134,16 @@ const EditProfileModal = ({ isOpen, onRequestClose, user }) => {
             type="button"
             onClick={onRequestClose}
             className="rounded-md bg-gray-300 px-4 py-2"
+            disabled={loading}
           >
             Cancel
           </button>
           <button
             type="submit"
             className="rounded-md bg-blue-500 px-4 py-2 text-white"
+            disabled={loading}
           >
-            Save
+            {loading ? "Saving..." : "Save"}
           </button>
         </div>
       </form>
