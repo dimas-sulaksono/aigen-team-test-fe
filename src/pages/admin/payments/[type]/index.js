@@ -59,18 +59,15 @@ const PaymentsAdminPage = ({ paymentType }) => {
     "numberOfElements": 0,
     "empty": true
   });
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    console.log(data);
-  }, [data]);
 
-  useEffect(() => {
     fetchDataPayment();
   }, [router]);
 
   const fetchDataPayment = async () => {
-    setIsLoading(true);
+    console.log("Fetching data ..");
 
     if (!Object.keys(router.query).length) {
       const response = await getAllPayment();
@@ -101,8 +98,14 @@ const PaymentsAdminPage = ({ paymentType }) => {
   };
 
   const handleOnChangeType = (e) => {
-    if (e.target.value) router.push(router.pathname + "/" + e.target.value);
+    if (e.target.value) {
+      router.push("/admin/payments/" + e.target.value);
+      return;
+    }
+    router.push("/admin/payments");
   };
+
+
 
 
   return (
@@ -114,7 +117,8 @@ const PaymentsAdminPage = ({ paymentType }) => {
             <select onChange={handleOnChangeType} id="type" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-52 p-2.5 ">
               <option value={""}>ALL</option>
               {paymentType?.map((item) => (
-                <option key={item.id} value={item.paymentTypeName}>{item.paymentTypeName}</option>
+
+                <option key={item.id} value={item.paymentTypeName} selected={router.query.type == item.paymentTypeName}>{item.paymentTypeName}</option>
               ))}
             </select>
           </div>

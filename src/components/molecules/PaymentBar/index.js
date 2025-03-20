@@ -1,31 +1,40 @@
 import { getAllSchoolYear } from '@/services/schoolYear';
+import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import { FaFilter } from 'react-icons/fa6';
 
 export const PaymentBar = () => {
   const [showFilter, setShowFilter] = useState(false);
   const [year, setYear] = useState();
+  const router = useRouter();
 
 
   const handleSubmitFilter = (e) => {
     e.preventDefault();
 
     const payload = {
-      ...(e.target.user.value && { user: e.target.user.value }),
+      ...(router.query.type && { type: router.query.type }),
+      ...(e.target.user.value && { username: e.target.user.value }),
       ...(e.target.student.value && { student: e.target.student.value }),
       ...(e.target.status.value && { status: e.target.status.value }),
       ...(e.target.year.value && { year: e.target.year.value }),
     };
     console.log(payload);
+
+    router.push({
+      pathname: router.pathname,
+      query: { ...payload }
+
+    });
   };
 
 
-  // useEffect(() => {
-  //   getAllSchoolYear()
-  //     .then(item => setYear(item.data.data.content))
-  //     .catch(console.log("Error while get schoolYear data")
-  //     );
-  // }, []);
+  useEffect(() => {
+    getAllSchoolYear()
+      .then(item => setYear(item.data.data.content))
+      .catch(console.log("Error while get schoolYear data")
+      );
+  }, []);
 
   return (
     <div className='flex justify-start py-4'>
