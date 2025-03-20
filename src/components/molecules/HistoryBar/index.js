@@ -4,10 +4,9 @@ import { useState, useRef, useEffect } from "react";
 export default function FilterDropdown() {
   const router = useRouter();
   const [payload, setPayload] = useState({});
-
+  // const currentPath = router.pathname;
 
   const handleChange = (filter) => {
-
     const [key, value] = Object.entries(filter)[0];
     if (!value) {
       setPayload((prev) => {
@@ -19,7 +18,7 @@ export default function FilterDropdown() {
 
     setPayload((prev) => ({
       ...prev,
-      ...filter
+      ...filter,
     }));
   };
 
@@ -32,39 +31,42 @@ export default function FilterDropdown() {
     handleChange({ search: value.trim() });
   };
 
-
   useEffect(() => {
     router.push({
       pathname: router.pathname,
-      query: payload
+      query: payload,
     });
   }, [payload]);
 
   return (
-    <div className="flex flex-col md:flex-row items-center justify-between space-y-3 md:space-y-0 md:space-x-4 p-4">
-      <div className="w-full md:w-1/2 flex gap-3">
+    <div className="flex flex-col items-center justify-between space-y-3 p-4 md:flex-row md:space-y-0 md:space-x-4">
+      <div className="flex w-full gap-3 md:w-1/2">
         {/* Size */}
         <div className="relative">
           <select
             onChange={(e) => handleChange({ size: e.target.value })}
-            className="py-2 pr-6 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-primary-700 focus:ring-4 focus:ring-gray-200 "
+            className="hover:text-primary-700 rounded-lg border border-gray-200 bg-white py-2 pr-6 text-sm font-medium text-gray-900 hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 focus:outline-none"
           >
             <option value="10">10</option>
             <option value="30">30</option>
             <option value="50">50</option>
           </select>
-
         </div>
 
-        <form className="flex items-center w-full" onSubmit={(e) => { handleSubmit(e); }}>
+        <form
+          className="flex w-full items-center"
+          onSubmit={(e) => {
+            handleSubmit(e);
+          }}
+        >
           <label htmlFor="simple-search" className="sr-only">
             Search
           </label>
           <div className="relative w-full">
-            <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
               <svg
                 aria-hidden="true"
-                className="w-5 h-5 text-gray-500"
+                className="h-5 w-5 text-gray-500"
                 fill="currentColor"
                 viewBox="0 0 20 20"
                 xmlns="http://www.w3.org/2000/svg"
@@ -79,36 +81,38 @@ export default function FilterDropdown() {
             <input
               type="text"
               id="search"
-              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full pl-10 p-2 "
+              className="focus:ring-primary-500 focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2 pl-10 text-sm text-gray-900"
               placeholder="Search"
             />
           </div>
         </form>
       </div>
-      <div className="w-full md:w-auto flex flex-col md:flex-row space-y-2 md:space-y-0 items-stretch md:items-center justify-end md:space-x-3 flex-shrink-0">
-        <button
-          type="button"
-          className="flex items-center justify-center text-white bg-blue-500 hover:bg-blue-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-4 py-2"
-        >
-          <svg
-            className="h-3.5 w-3.5 mr-2"
-            fill="currentColor"
-            viewBox="0 0 20 20"
-            xmlns="http://www.w3.org/2000/svg"
-            aria-hidden="true"
+      <div className="flex w-full flex-shrink-0 flex-col items-stretch justify-end space-y-2 md:w-auto md:flex-row md:items-center md:space-y-0 md:space-x-3">
+        {/* {currentPath === "/payments" && (
+          <button
+            type="button"
+            className="focus:ring-primary-300 flex items-center justify-center rounded-lg bg-blue-500 px-4 py-2 text-sm font-medium text-white hover:bg-blue-800 focus:ring-4"
           >
-            <path
-              clipRule="evenodd"
-              fillRule="evenodd"
-              d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z"
-            />
-          </svg>
-          New payment
-        </button>
+            <svg
+              className="mr-2 h-3.5 w-3.5"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+              xmlns="http://www.w3.org/2000/svg"
+              aria-hidden="true"
+            >
+              <path
+                clipRule="evenodd"
+                fillRule="evenodd"
+                d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z"
+              />
+            </svg>
+            New payment
+          </button>
+        )} */}
         {/* Filter */}
         <select
           onChange={(e) => handleChange({ type: e.target.value })}
-          className="w-full md:w-auto py-2 px-4 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-primary-700 focus:ring-4 focus:ring-gray-200"
+          className="hover:text-primary-700 w-full rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-900 hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 focus:outline-none md:w-auto"
         >
           <option value="">- Type -</option>
           <option value="SPP">SPP</option>
@@ -119,14 +123,13 @@ export default function FilterDropdown() {
         </select>
         <select
           onChange={(e) => handleChange({ status: e.target.value })}
-          className="w-full md:w-auto py-2 px-4 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-primary-700 focus:ring-4 focus:ring-gray-200"
+          className="hover:text-primary-700 w-full rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-900 hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 focus:outline-none md:w-auto"
         >
           <option value="">- Status -</option>
           <option value="paid">Paid</option>
           <option value="pending">Pending</option>
           <option value="overdue">Overdue</option>
         </select>
-
       </div>
     </div>
   );
