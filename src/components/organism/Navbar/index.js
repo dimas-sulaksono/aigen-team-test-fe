@@ -21,32 +21,30 @@ const Navbar = () => {
     <nav className="sticky top-0 z-10 bg-white shadow">
       <div className="container mx-auto flex items-center justify-between px-5 py-4 lg:px-10">
         <div className="flex items-center gap-3.5">
-          <Link href="/">
+          <Link href="/home">
             <LogoIcon size={24} />
           </Link>
 
           <ul className="hidden md:flex md:space-x-6">
-            {["/home", "/payments", "/history", "/support"].map(
-              (path, index) => (
-                <li key={index}>
-                  <Link
-                    href={path}
-                    className={`text-sm font-medium hover:border-b-2 ${
-                      isActive(path)
-                        ? "border-b-2 border-black font-bold text-black"
-                        : "text-gray-600 hover:text-gray-800"
-                    }`}
-                  >
-                    {path.replace("/", "").toUpperCase()}
-                  </Link>
-                </li>
-              ),
-            )}
+            {["/home", "/payments", "/history"].map((path, index) => (
+              <li key={index}>
+                <Link
+                  href={path}
+                  className={`text-sm font-medium hover:border-b-2 ${
+                    isActive(path)
+                      ? "border-b-2 border-black font-bold text-black"
+                      : "text-gray-600 hover:text-gray-800"
+                  }`}
+                >
+                  {path.replace("/", "").toUpperCase()}
+                </Link>
+              </li>
+            ))}
           </ul>
         </div>
 
         <div className="flex items-center space-x-4">
-          <IoMdNotificationsOutline className="cursor-pointer text-xl text-gray-600 hover:text-gray-800" />
+          {/* <IoMdNotificationsOutline className="cursor-pointer text-xl text-gray-600 hover:text-gray-800" /> */}
 
           <div className="relative">
             <FaRegUser
