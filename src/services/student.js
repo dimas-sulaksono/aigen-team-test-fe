@@ -139,3 +139,13 @@ export const getCountStudents = async () => {
     return { status: false, message: error.response };
   }
 };
+
+export const getStudentByNis = async (nis) => {
+  try {
+    const res = await axios.get(`${api}/student/nis/${nis}`, getAuthHeader());
+    return { status: true, data: res.data };
+  } catch (error) {
+    console.log(error);
+    return { status: false, message: error.response };
+  }
+};

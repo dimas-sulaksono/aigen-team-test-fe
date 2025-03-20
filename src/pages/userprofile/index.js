@@ -3,7 +3,7 @@ import Image from "next/image";
 import React, { useEffect, useState, useCallback } from "react";
 import { getByemail } from "@/services/auth";
 import { jwtDecode } from "jwt-decode";
-import { getStudentByUsername } from "@/services/student";
+import { getStudentByNis } from "@/services/student";
 import { useRouter } from "next/router";
 import EditProfileModal from "@/components/molecules/EditProfile";
 import EditStudentModal from "@/components/molecules/EditStudent";
@@ -42,7 +42,7 @@ function UserProfilePage() {
 
   const fetchStudent = useCallback(async () => {
     try {
-      const response = await getStudentByUsername(user.name);
+      const response = await getStudentByNis(user.nis);
       setStudent(response?.data || null);
     } catch (error) {
       console.error("Error fetching student data:", error);
