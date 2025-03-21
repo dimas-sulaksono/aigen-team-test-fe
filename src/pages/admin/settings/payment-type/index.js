@@ -85,7 +85,7 @@ const SettingSchoolYearAdminPage = () => {
           <div className="rounded-lg bg-white p-6 shadow-md">
             <div className="mb-4 flex w-full flex-col">
               <h2 className="pb-4 text-xl font-semibold text-gray-700">
-                Payment List
+                Payment Type
               </h2>
               <div className="flex flex-row justify-between">
                 <Button

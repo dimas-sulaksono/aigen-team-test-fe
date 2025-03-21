@@ -69,7 +69,7 @@ function User() {
 
   useEffect(() => {
     fetchUsers();
-  }, []);
+  }, [router.query.page]);
 
   const openDeleteModal = (user) => {
     setSelectedUser(user);

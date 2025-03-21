@@ -1,64 +1,65 @@
-import { RowPayment } from '@/components/atoms/RowPayment';
-import { LoadingStatus } from '@/components/molecules/LoadingStatus';
-import { Pagination } from '@/components/molecules/Pagination';
-import { PaymentBar } from '@/components/molecules/PaymentBar';
-import PaymentDetailModal from '@/components/molecules/PaymentDetailModal';
-import UpdateStatusModal from '@/components/molecules/PaymentUpdateModal';
-import AdminLayout from '@/components/templates/AdminLayout';
-import { getAllPayment, getFilterPayment } from '@/services/payment';
-import { getAllPaymentType } from '@/services/paymentType';
-import { useRouter } from 'next/router';
-import React, { useEffect, useState } from 'react';
+import { RowPayment } from "@/components/atoms/RowPayment";
+import { LoadingStatus } from "@/components/molecules/LoadingStatus";
+import { Pagination } from "@/components/molecules/Pagination";
+import { PaymentBar } from "@/components/molecules/PaymentBar";
+import PaymentDetailModal from "@/components/molecules/PaymentDetailModal";
+import UpdateStatusModal from "@/components/molecules/PaymentUpdateModal";
+import AdminLayout from "@/components/templates/AdminLayout";
+import { getAllPayment, getFilterPayment } from "@/services/payment";
+import { getAllPaymentType } from "@/services/paymentType";
+import { useRouter } from "next/router";
+import React, { useEffect, useState } from "react";
 
 const PaymentsAdminPage = ({ paymentType }) => {
-
   const router = useRouter();
-  const [data, setData] = useState([{
-    "id": null,
-    "name": "",
-    "user": {
-      "id": null,
-      "name": ""
-    },
-    "student": {
-      "nis": "",
-      "name": ""
-    },
-    "type": "",
-    "schoolYear": "",
-    "amount": null,
-    "status": "",
-    "description": "",
-    "createdAt": null,
-    "updatedAt": null,
-    "deletedAt": null
-  }]);
-  const [pageable, setPageable] = useState({
-    "pageable": {
-      "pageNumber": null,
-      "pageSize": null,
-      "sort": {
-        "empty": false,
-        "sorted": true,
-        "unsorted": false
+  const [data, setData] = useState([
+    {
+      id: null,
+      name: "",
+      user: {
+        id: null,
+        name: "",
       },
-      "offset": 0,
-      "paged": true,
-      "unpaged": false
+      student: {
+        nis: "",
+        name: "",
+      },
+      type: "",
+      schoolYear: "",
+      amount: null,
+      status: "",
+      description: "",
+      createdAt: null,
+      updatedAt: null,
+      deletedAt: null,
     },
-    "last": true,
-    "totalPages": 0,
-    "totalElements": 0,
-    "size": 1,
-    "number": 0,
-    "sort": {
-      "empty": false,
-      "sorted": true,
-      "unsorted": false
+  ]);
+  const [pageable, setPageable] = useState({
+    pageable: {
+      pageNumber: null,
+      pageSize: null,
+      sort: {
+        empty: false,
+        sorted: true,
+        unsorted: false,
+      },
+      offset: 0,
+      paged: true,
+      unpaged: false,
     },
-    "first": true,
-    "numberOfElements": 0,
-    "empty": true
+    last: true,
+    totalPages: 0,
+    totalElements: 0,
+    size: 1,
+    number: 0,
+    sort: {
+      empty: false,
+      sorted: true,
+      unsorted: false,
+    },
+    first: true,
+    numberOfElements: 0,
+    empty: true,
   });
   const [selectedData, setSelectedData] = useState();
   const [selectedDataUpdate, setSelectedDataUpdate] = useState();
@@ -95,25 +96,22 @@ const PaymentsAdminPage = ({ paymentType }) => {
     }
     setIsLoading(false);
     return;
-
   };
 
   const handleOnChangeType = (e) => {
     if (e.target.value) router.push(router.pathname + "/" + e.target.value);
   };
 
-
-
   return (
     <AdminLayout>
-      <section className='h-full py-4 relative'>
-        <div className="relative overflow-x-auto shadow-md sm:rounded-lg flex flex-col  p-4 bg-white">
+      <section className="relative h-full py-4">
+        <div className="relative flex flex-col overflow-x-auto bg-white p-4 shadow-md sm:rounded-lg">
           <div className="flex items-center gap-4">
             <span className="text-lg font-semibold">Payment List</span>
             <select
               onChange={handleOnChangeType}
               id="type"
-              className="border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring focus:ring-blue-200 text-sm"
+              className="rounded-md border border-gray-300 px-3 py-2 text-sm focus:ring focus:ring-blue-200 focus:outline-none"
             >
               <option value="">All</option>
               {paymentType?.map((item) => (
@@ -125,10 +123,10 @@ const PaymentsAdminPage = ({ paymentType }) => {
           </div>
           {/* Bar */}
           <PaymentBar />
-          <div className='grow'>
+          <div className="grow">
             {/* Table */}
-            <table className="w-full text-sm text-left rtl:text-right text-gray-500 ">
-              <thead className="text-xs text-gray-700 uppercase bg-gray-50 ">
+            <table className="w-full text-left text-sm text-gray-500 rtl:text-right">
+              <thead className="bg-gray-50 text-xs text-gray-700 uppercase">
                 <tr>
                   <th scope="col" className="px-4 py-3">
                     No
@@ -158,23 +156,40 @@ const PaymentsAdminPage = ({ paymentType }) => {
               </thead>
               <tbody>
                 {data.map((item, index) => (
-                  <RowPayment key={index} index={index} item={item} handleSelect={setSelectedData} handleUpdate={setSelectedDataUpdate} />
+                  <RowPayment
+                    key={index}
+                    index={index}
+                    item={item}
+                    handleSelect={setSelectedData}
+                    handleUpdate={setSelectedDataUpdate}
+                  />
                 ))}
               </tbody>
             </table>
           </div>
         </div>
         {/* Pagination */}
-        {pageable && (
-          <Pagination pageable={pageable} />
+        {pageable && <Pagination pageable={pageable} />}
+
+        {selectedData && (
+          <PaymentDetailModal
+            data={selectedData}
+            onClose={() => {
+              setSelectedData(null);
+            }}
+          />
+        )}
+        {selectedDataUpdate && (
+          <UpdateStatusModal
+            data={selectedDataUpdate}
+            onClose={() => {
+              setSelectedDataUpdate(null);
+            }}
+            onSuccess={fetchDataPayment}
+          />
         )}
 
-
-        {selectedData && <PaymentDetailModal data={selectedData} onClose={() => { setSelectedData(null); }} />}
-        {selectedDataUpdate && <UpdateStatusModal data={selectedDataUpdate} onClose={() => { setSelectedDataUpdate(null); }} onSuccess={fetchDataPayment} />}
-
         {isLoading && <LoadingStatus />}
-
       </section>
     </AdminLayout>
   );
@@ -186,13 +201,13 @@ export async function getServerSideProps() {
     return {
       props: {
         paymentType: response.data.data.content,
-      }
+      },
     };
   }
   return {
     props: {
       paymentType: null,
-    }
+    },
   };
 }
 
