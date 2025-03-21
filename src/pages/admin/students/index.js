@@ -31,6 +31,7 @@ import { getAllSchoolYear } from "@/services/schoolYear";
 import { useRouter } from "next/router";
 import SoftDeleteStudentModal from "./softDeleteClassModal";
 import { Pagination } from "@/components/molecules/Pagination";
+import { LoadingStatus } from "@/components/molecules/LoadingStatus";
 
 const StudentsAdminPage = () => {
   const router = useRouter();
@@ -39,6 +40,7 @@ const StudentsAdminPage = () => {
   const [data, setData] = useState([]);
   const [classes, setClasses] = useState([]);
   const [schoolYear, setSchoolYear] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [selectedStudent, setSelectedStudent] = useState(false);
   const [selectedSchoolYear, setSelectedSchoolYear] = useState("Any");
   const [addStudent, setAddStudent] = useState(false);
@@ -54,6 +56,7 @@ const StudentsAdminPage = () => {
 
   const fetchData = useCallback(async () => {
     const { startDate, endDate, name, sort } = router.query;
+    setLoading(true);
 
     // console.log("Fetching data dengan filter:", { startDate, endDate, name });
 
@@ -79,6 +82,7 @@ const StudentsAdminPage = () => {
       setTotalPages(res.data.totalPages);
       setTotalElements(res.data.totalElements);
     }
+    setLoading(false);
   }, [router.query, currentPage, itemsPerPage]);
 
   const fetchClass = useCallback(async () => {
@@ -109,6 +113,7 @@ const StudentsAdminPage = () => {
 
   const handleFilter = (event) => {
     event.preventDefault();
+    setLoading(true);
 
     if (!selectedSchoolYear || selectedSchoolYear === "Any") {
       router.push({ pathname: "/admin/students" });
@@ -135,6 +140,7 @@ const StudentsAdminPage = () => {
       undefined,
       { shallow: true },
     );
+    setLoading(false);
   };
 
   const handleSearch = (e) => {
@@ -195,7 +201,8 @@ const StudentsAdminPage = () => {
   return (
     <>
       <AdminLayout>
-        <Section>
+        <Section className={"relative"}>
+          {loading && <LoadingStatus />}
           <div className="rounded-lg bg-white p-6 shadow-md">
             <div className="mb-4 flex w-full flex-col">
               <h2 className="pb-4 text-xl font-semibold text-gray-700">
@@ -232,6 +239,7 @@ const StudentsAdminPage = () => {
                     onClick={() => setIsOpen(!isOpen)}
                     className="relative flex items-center gap-1 rounded-md border border-gray-300 bg-transparent px-4 py-2 transition"
                   >
+                    {loading && <LoadingStatus />}
                     <FaFilter /> Filters
                   </Button>
                   {isOpen && (
@@ -239,6 +247,7 @@ const StudentsAdminPage = () => {
                       onSubmit={handleFilter}
                       className="absolute z-50 mt-10 w-60 rounded-lg bg-white p-4 shadow-lg"
                     >
+                      {loading && <LoadingStatus />}
                       <div className="flex items-center justify-between border-b pb-2">
                         <h3 className="text-lg font-semibold text-gray-800">
                           Filter

@@ -14,11 +14,13 @@ import SoftDeleteClassModal from "./softDeleteClassModal";
 import Input from "@/components/atoms/Input";
 import Form from "@/components/atoms/Form";
 import { useRouter } from "next/router";
+import { LoadingStatus } from "@/components/molecules/LoadingStatus";
 
 const SettingClassAdminPage = () => {
   const router = useRouter();
   const [data, setData] = useState([]);
   const [year, setYear] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [refresh, setRefresh] = useState(false);
   const [addData, setAddData] = useState(false);
   const [editData, setEditData] = useState(false);
@@ -32,12 +34,14 @@ const SettingClassAdminPage = () => {
   const dispatch = useDispatch();
 
   const fetchData = useCallback(async () => {
+    setLoading(true);
     const res = await getAllClass(currentPage, itemsPerPage);
     if (res.status) {
       setData(res.data?.content);
       setTotalElements(res.data.totalElements);
       setTotalPages(res.data.totalPages);
     }
+    setLoading(false);
   }, [currentPage, itemsPerPage]);
 
   const fetchYear = useCallback(async () => {
@@ -94,7 +98,8 @@ const SettingClassAdminPage = () => {
   return (
     <>
       <AdminLayout>
-        <Section>
+        <Section className={"relative"}>
+          {loading && <LoadingStatus />}
           <div className="rounded-lg bg-white p-6 shadow-md">
             <div className="mb-4 flex w-full flex-col">
               <h2 className="pb-4 text-xl font-semibold text-gray-700">

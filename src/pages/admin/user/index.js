@@ -10,6 +10,7 @@ import { useRouter } from "next/router";
 import DeleteUserModal from "./DeleteUserModal";
 import EditUserModal from "./EditUserModal";
 import { useDispatch } from "react-redux";
+import { LoadingStatus } from "@/components/molecules/LoadingStatus";
 
 function User() {
   const [users, setUsers] = useState([]);
@@ -41,35 +42,34 @@ function User() {
     }
   };
 
-  const handleFilterByRole = async (role) => {
-    try {
-      setLoading(true);
-      console.log("Filtering by role:", role);
-      const response = await filterUser(role, 0, 10);
-      console.log("API Response:", response);
-      if (response.status && Array.isArray(response.data.content)) {
-        setUsers(response.data.content);
-        setPage(response.data);
-      } else {
-        setUsers([]);
-      }
-    } catch (error) {
-      console.error("Error filtering users:", error);
-      setError(error.message || "Gagal memfilter user");
-    } finally {
-      setLoading(false);
+  const handleRoleChange = async (e) => {
+    const selectedRole = e.target.value;
+    setLoading(true);
+    setSelectedRole(selectedRole);
+    if (selectedRole === "") {
+      router.push(router.pathname);
+      fetchUsers();
+      return;
     }
-  };
+    const query = { role: selectedRole };
+    const response = await filterUser(query);
+    console.log(response);
 
-  const handleRoleChange = (e) => {
-    const role = e.target.value;
-    setSelectedRole(role);
-    handleFilterByRole(role);
+    if (response.status) {
+      setUsers(response.data.data.content);
+      router.push({
+        pathname: router.pathname,
+        query: { ...router.query, role: selectedRole },
+      });
+    } else {
+      setError(response.message);
+    }
+    setLoading(false);
   };
 
   useEffect(() => {
     fetchUsers();
-  }, [router]);
+  }, []);
 
   const openDeleteModal = (user) => {
     setSelectedUser(user);
@@ -102,7 +102,8 @@ function User() {
   return (
     <>
       <AdminLayout>
-        <section>
+        <section className="relative">
+          {loading && <LoadingStatus />}
           <div className="rounded-lg bg-white p-6 shadow-md">
             <div className="mb-4 flex w-full flex-col">
               <div className="flex flex-row justify-between">
@@ -134,7 +135,7 @@ function User() {
                     </tr>
                   </thead>
                   <tbody>
-                    {users.length > 0 ? (
+                    {users?.length > 0 ? (
                       users.map((user, index) => (
                         <tr key={user.id} className="border-b border-gray-200">
                           <td className="py-3 pl-4">{index + 1}</td>
