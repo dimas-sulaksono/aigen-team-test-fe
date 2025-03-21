@@ -106,7 +106,7 @@ const PaymentsAdminPage = ({ paymentType }) => {
 
   return (
     <AdminLayout>
-      <section className='h-full px-10 py-4 relative'>
+      <section className='h-full py-4 relative'>
         <div className="relative overflow-x-auto shadow-md sm:rounded-lg flex flex-col  p-4 bg-white">
           <div className="flex items-center gap-4">
             <span className="text-lg font-semibold">Payment List</span>

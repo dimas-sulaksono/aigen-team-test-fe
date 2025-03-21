@@ -1,5 +1,6 @@
 import { Row } from "@/components/atoms/Row";
 import Bar from "@/components/molecules/HistoryBar";
+import { LoadingStatus } from "@/components/molecules/LoadingStatus";
 import { Pagination } from "@/components/molecules/Pagination";
 import { Details } from "@/components/molecules/PaymentDetails";
 import { downloadPDF, getUserPaymentHistory } from "@/services/payment";
@@ -11,14 +12,17 @@ const HistoryPage = () => {
   const [data, setData] = useState();
   const [dataDetails, setDataDetails] = useState({});
   const [pageable, setPageable] = useState();
+  const [isLoading, setIsLoading] = useState(false);
 
   const fetchPaymentUser = async () => {
+    setIsLoading(true);
     const response = await getUserPaymentHistory(router.query);
     if (response.status) {
       const { content, ...pageable } = response.data;
       setData(content);
       setPageable(pageable);
     }
+    setIsLoading(false);
   };
 
   useEffect(() => {
@@ -91,6 +95,7 @@ const HistoryPage = () => {
           handleDownload={handleDownload}
         />
       </div>
+      {isLoading && <LoadingStatus />}
     </section>
   );
 };
