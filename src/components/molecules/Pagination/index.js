@@ -45,15 +45,15 @@ export const Pagination = ({ pageable = {} }) => {
       className="flex flex-col items-start justify-between space-y-3 p-4 md:flex-row md:items-center md:space-y-0"
       aria-label="Table navigation"
     >
-      <span className="text-sm font-normal text-gray-500 dark:text-gray-400">
+      <span className="text-sm font-normal text-gray-500">
         Showing
-        <span className="font-semibold text-gray-900 dark:text-white">
+        <span className="font-semibold text-gray-900">
           {` `}
           {pageable?.number * pageable?.size + 1 || 0} to{" "}
           {pageable?.number * pageable?.size + pageable?.numberOfElements || 0}
         </span>{" "}
         of{" "}
-        <span className="font-semibold text-gray-900 dark:text-white">
+        <span className="font-semibold text-gray-900">
           {pageable?.totalElements}
         </span>
       </span>
