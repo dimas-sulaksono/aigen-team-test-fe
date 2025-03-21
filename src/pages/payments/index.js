@@ -56,6 +56,7 @@ const PaymentsPage = () => {
           duration: 3000,
         }),
       );
+      router.push("/history");
     } else {
       if (res.message.status == 400) {
         const errMessage = Object.values(res.message.data.data).join(" - ");
