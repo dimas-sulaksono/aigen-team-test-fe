@@ -12,9 +12,11 @@ import DeletePaymentTypeModal from "./deletePaymentTypeModal";
 import Form from "@/components/atoms/Form";
 import Input from "@/components/atoms/Input";
 import { useRouter } from "next/router";
+import { LoadingStatus } from "@/components/molecules/LoadingStatus";
 const SettingSchoolYearAdminPage = () => {
   const router = useRouter();
   const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [refresh, setRefresh] = useState(false);
   const [addData, setAddData] = useState(false);
   const [editData, setEditData] = useState(false);
@@ -27,12 +29,14 @@ const SettingSchoolYearAdminPage = () => {
   const dispatch = useDispatch();
 
   const fetchData = useCallback(async () => {
+    setLoading(true);
     const res = await getAllPaymentType(currentPage, itemsPerPage);
     if (res.status) {
       setData(res.data?.data?.content);
       setTotalElements(res.data.data.totalElements);
       setTotalPages(res.data.data.totalPages);
     }
+    setLoading(false);
   }, [currentPage, itemsPerPage]);
 
   useEffect(() => {
@@ -76,7 +80,8 @@ const SettingSchoolYearAdminPage = () => {
   return (
     <>
       <AdminLayout>
-        <Section>
+        <Section className={"relative"}>
+          {loading && <LoadingStatus />}
           <div className="rounded-lg bg-white p-6 shadow-md">
             <div className="mb-4 flex w-full flex-col">
               <h2 className="pb-4 text-xl font-semibold text-gray-700">

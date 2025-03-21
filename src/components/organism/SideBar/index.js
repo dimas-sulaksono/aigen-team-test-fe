@@ -143,7 +143,7 @@ const SideBarAdmin = ({ children }) => {
           >
             <FaSignOutAlt className="mr-2" />
             <Button
-              className="block w-full text-left text-red-600 hover:bg-red-100"
+              className="block w-full cursor-pointer text-left text-red-600 hover:bg-red-100"
               onClick={() => {
                 signOut();
                 dispatch(closeAll());

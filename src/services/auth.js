@@ -111,9 +111,11 @@ export const deleteUser = async (userId) => {
 };
 
 export const filterUser = async (role, page = 0, size = 10) => {
+  console.log(role.role);
+
   try {
     const res = await axios.get(
-      `${api}/user/filter?role=${role}&page=${page}&size=${size}`,
+      `${api}/user/filter?role=${role.role}&page=${page}&size=${size}`,
       getAuthHeader(),
     );
     return { status: true, data: res.data };

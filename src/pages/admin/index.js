@@ -1,3 +1,4 @@
+import { LoadingStatus } from "@/components/molecules/LoadingStatus";
 import AdminLayout from "@/components/templates/AdminLayout";
 import { formatCurrency } from "@/helpers/utils/formatCurrency";
 import {
@@ -16,12 +17,16 @@ const AdminPage = () => {
   const [transactions, setTransactions] = useState([]);
   const [recent, setRecent] = useState([]);
 
+  const [loading, setLoading] = useState(false);
+
   const fetchStudents = useCallback(async () => {
+    setLoading(true);
     const res = await getCountStudents();
 
     if (res.status) {
       setStudents(res.data);
     }
+    setLoading(false);
   }, []);
 
   const fetchPaymentsPaid = useCallback(async () => {
@@ -32,8 +37,9 @@ const AdminPage = () => {
   }, []);
 
   const fetchPayments = useCallback(async () => {
+    setLoading(true);
     const res = await getAllPayment(0, 5);
-    console.log(res);
+    // console.log(res);
 
     if (res.status) {
       const data = res.data.content
@@ -41,6 +47,7 @@ const AdminPage = () => {
         .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
       setRecent(data);
     }
+    setLoading(false);
   }, []);
 
   const fetchPaymentPending = useCallback(async () => {
@@ -61,7 +68,9 @@ const AdminPage = () => {
 
   return (
     <AdminLayout>
-      <main className="flex-1 p-8">
+      <main className="relative flex-1 p-8">
+        {loading && <LoadingStatus />}
+
         <div className="mb-8 grid grid-cols-3 gap-3">
           <div className="rounded bg-white p-4">
             <h3 className="mb-2 text-sm font-semibold lg:text-lg">

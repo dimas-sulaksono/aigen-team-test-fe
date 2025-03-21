@@ -57,7 +57,7 @@ const Navbar = () => {
                   <li>
                     <Link
                       href="/userprofile"
-                      className="block px-4 py-2 text-gray-600 hover:bg-gray-100"
+                      className="block px-4 py-2 text-gray-600 hover:rounded-t-lg hover:bg-gray-100"
                       onClick={() => dispatch(closeAll())}
                     >
                       Profile
@@ -66,7 +66,7 @@ const Navbar = () => {
                   <li>
                     <Button
                       type={"button"}
-                      className="block w-full cursor-pointer px-4 py-2 text-left text-gray-600 hover:bg-gray-100"
+                      className="hover block w-full cursor-pointer rounded-b-lg px-4 py-2 text-left text-gray-600 hover:bg-gray-100"
                       onClick={async () => {
                         await signOut();
                         dispatch(closeAll());

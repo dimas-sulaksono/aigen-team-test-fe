@@ -1,12 +1,27 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
 import { Pagination, Navigation } from "swiper/modules";
 import { FaFacebook, FaTwitter, FaInstagram, FaLinkedin } from "react-icons/fa";
+import { useRouter } from "next/router";
+import { jwtDecode } from "jwt-decode";
 
 function LandingPage() {
+  const token = localStorage.getItem("token");
+  const router = useRouter();
+  useEffect(() => {
+    if (!token) {
+      router.push("/auth/login");
+    } else {
+      const decoded = jwtDecode(token);
+      if (decoded.exp < Date.now() / 1000) {
+        localStorage.removeItem("token");
+        router.push("/auth/login");
+      }
+    }
+  }, [router, token]);
   return (
     <div className="min-h-screen bg-gray-100">
       <header className="bg-purple-600 p-6 text-center text-2xl font-bold text-white">
